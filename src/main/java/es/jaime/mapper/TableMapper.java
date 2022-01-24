@@ -1,16 +1,12 @@
-package es.jaime.tablemapper;
+package es.jaime.mapper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.sql.ResultSet;
-import java.util.function.Function;
-
 @AllArgsConstructor
-public class TableMapper {
+public final class TableMapper<T> {
     @Getter private String table;
-    @Getter private String id;
-    @Getter private Function<ResultSet, Object> classBuilder;
+    @Getter private String idField;
 
     public static TableMapperBuilderStart table(String table){
         return new TableMapperBuilderStart(table);
