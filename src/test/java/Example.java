@@ -1,11 +1,11 @@
 import es.jaime.connection.DatabaseConnection;
-import es.jaime.repository.DatabaseRepository;
+import es.jaime.repository.DataBaseRepositoryValueObjects;
 import es.jaime.mapper.TableMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Example extends DatabaseRepository<Cuenta> {
+public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
     public Example() {
         super(new DatabaseConnectity());
     }
@@ -13,16 +13,17 @@ public class Example extends DatabaseRepository<Cuenta> {
     public static void main(String[] args) {
         Example example = new Example();
 
-        System.out.println(example.findById(3));
+        System.out.println(example.findById(new CuentaId(3)).get().getUsername().value());
 
-        example.all().forEach(System.out::println);
+        example.all().forEach(c -> System.out.println(c.getUsername().value()));
 
-        Cuenta cuenta = new Cuenta(
-                1,"juan", "121212", 1, "USER"
+        Cuenta cuenta = Cuenta.create(
+                1,"papa", "121212", 1, "USER"
         );
 
         example.save(cuenta);
-        example.deleteById(1);
+
+        example.deleteById(new CuentaId(1));
     }
 
     @Override
@@ -31,12 +32,13 @@ public class Example extends DatabaseRepository<Cuenta> {
                 .table("cuentas")
                 .idField("id")
                 .fields("id", "username", "password", "active", "roles")
+                .usingValueObjects("value")
                 .build();
     }
 
     @Override
     public Cuenta buildObjectFromResultSet(ResultSet result) throws SQLException {
-        return new Cuenta(
+        return Cuenta.create(
                 result.getInt("id"),
                 result.getString("username"),
                 result.getString("password"),

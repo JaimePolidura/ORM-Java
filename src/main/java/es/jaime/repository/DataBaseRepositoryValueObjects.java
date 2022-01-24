@@ -1,72 +1,40 @@
 package es.jaime.repository;
 
 import es.jaime.connection.DatabaseConnection;
-import es.jaime.mapper.TableMapper;
-import es.jaimetruman.delete.Delete;
 import es.jaimetruman.insert.Insert;
 import es.jaimetruman.insert.InsertOptionFinal;
-import es.jaimetruman.select.Select;
 import es.jaimetruman.update.Update;
 import es.jaimetruman.update.UpdateOptionFull1;
 import es.jaimetruman.update.UpdateOptionInitial;
 import lombok.SneakyThrows;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static es.jaime.utils.ReflectionUtils.*;
 
-public abstract class DatabaseRepository<T> extends Repostitory<T>{
-    private final DatabaseConnection dataBaseConnection;
+public abstract class DataBaseRepositoryValueObjects<T> extends DatabaseRepository<T> {
     private final InsertOptionFinal insertQueryOnSave;
     private final UpdateOptionInitial updateQueryOnSave;
+    private final DatabaseConnection dataBaseConnection;
 
-    public DatabaseRepository(DatabaseConnection dataBaseConnection) {
+    public DataBaseRepositoryValueObjects(DatabaseConnection dataBaseConnection) {
+        super(dataBaseConnection);
+
         this.dataBaseConnection = dataBaseConnection;
-
         this.insertQueryOnSave = Insert.table(table())
                 .fields(mapper().getFields().toArray(new String[0]));
         this.updateQueryOnSave = Update.table(mapper().getTable());
     }
 
-    public abstract TableMapper<T> mapper();
-    public abstract T buildObjectFromResultSet(ResultSet resultSet) throws SQLException;
-
     @Override
-    protected List<T> all(){
-        try{
-            ResultSet resultSet = dataBaseConnection.sendQuery(Select.from(table()));
-            List<T> toReturn = new ArrayList<>();
-
-            while (resultSet.next()){
-                toReturn.add(buildObjectFromResultSet(resultSet));
-            }
-
-            return toReturn;
-        }catch (Exception e){
-            return Collections.EMPTY_LIST;
-        }
+    protected Optional<T> findById(Object id) {
+        return super.findById(invokeMethod(id, valueObjectField()));
     }
 
     @Override
-    protected Optional<T> findById(Object id){
-        try {
-            ResultSet resultSet = dataBaseConnection.sendQuery(
-                    Select.from(table()).where(idField()).equal(id)
-            );
-
-            resultSet.next();
-
-            return Optional.ofNullable(buildObjectFromResultSet(resultSet));
-        }catch (Exception e){
-            return Optional.empty();
-        }
-    }
-
-    @SneakyThrows
-    @Override
-    protected void save(T toPersist){
+    protected void save(T toPersist) {
         Object id = invokeGetterMethod(toPersist, idField());
 
         boolean exists = findById(id).isPresent();
@@ -78,14 +46,14 @@ public abstract class DatabaseRepository<T> extends Repostitory<T>{
     }
 
     @SneakyThrows
-    private void updateExistingObject(T toUpdate, Object id){
+    private void updateExistingObject(T toUpdate, Object idValueObject){
+        Object id = invokeMethod(idValueObject, valueObjectField());
         UpdateOptionFull1 updateOptionFull1 = this.updateQueryOnSave.set(idField(), id);
 
         for(String field : getFields()){
-            //TODO Improve
             if(field.equalsIgnoreCase(idField())) continue;
 
-            updateOptionFull1 = updateOptionFull1.andSet(field, invokeGetterMethod(toUpdate, field));
+            updateOptionFull1 = updateOptionFull1.andSet(field, invokeValueObjectMethodGetter(toUpdate, field, valueObjectField()));
         }
 
         dataBaseConnection.sendUpdate(
@@ -98,7 +66,7 @@ public abstract class DatabaseRepository<T> extends Repostitory<T>{
         List<Object> valuesToAddInQuery = new ArrayList<>();
 
         for(String field : getFields()){
-            Object value = invokeGetterMethod(toPersist, field);
+            Object value = invokeValueObjectMethodGetter(toPersist, field, valueObjectField());
 
             valuesToAddInQuery.add(value);
         }
@@ -108,12 +76,9 @@ public abstract class DatabaseRepository<T> extends Repostitory<T>{
         );
     }
 
-    @SneakyThrows
     @Override
-    protected void deleteById(Object id){
-        dataBaseConnection.sendUpdate(
-                Delete.from(table()).where(idField()).equal(id)
-        );
+    protected void deleteById(Object id) {
+        super.deleteById(invokeMethod(id, valueObjectField()));
     }
 
     private String table(){
