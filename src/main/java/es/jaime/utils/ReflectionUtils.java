@@ -20,7 +20,7 @@ public final class ReflectionUtils {
 
     @SneakyThrows
     public static Object invokeValueObjectMethodGetter(Object aggreageteInstance, String fieldAggregate, String fieldValueObject){
-        Object valueObject = invokeGetterMethod(aggreageteInstance, fieldValueObject);
+        Object valueObject = invokeGetterMethod(aggreageteInstance, fieldAggregate);
 
         return valueObject.getClass().getDeclaredMethod(fieldValueObject).invoke(valueObject);
     }

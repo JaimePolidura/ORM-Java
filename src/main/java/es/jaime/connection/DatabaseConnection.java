@@ -26,15 +26,15 @@ public abstract class DatabaseConnection {
 
     protected abstract String url();
 
-    public ResultSet executeQuery(ReadQuery query) throws SQLException {
+    public ResultSet sendQuery(ReadQuery query) throws SQLException {
         return connection.createStatement().executeQuery(query.toString());
     }
 
-    public void executeUpdate(WriteQuery query) throws SQLException {
+    public void sendUpdate(WriteQuery query) throws SQLException {
         connection.createStatement().executeUpdate(query.toString());
     }
 
-    public void executeUpdate(String query) throws SQLException {
+    public void sendUpdate(String query) throws SQLException {
         connection.createStatement().executeUpdate(query);
     }
 }

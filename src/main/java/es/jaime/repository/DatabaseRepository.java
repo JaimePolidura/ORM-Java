@@ -17,7 +17,7 @@ import java.util.*;
 
 import static es.jaime.utils.ReflectionUtils.*;
 
-public abstract class DatabaseRepository<T> {
+public abstract class DatabaseRepository<T> extends Repostitory<T>{
     private final DatabaseConnection dataBaseConnection;
     private final InsertOptionFinal insertQueryOnSave;
     private final UpdateOptionInitial updateQueryOnSave;
@@ -31,71 +31,67 @@ public abstract class DatabaseRepository<T> {
     }
 
     public abstract TableMapper<T> mapper();
-    public abstract T buildObject(ResultSet resultSet) throws SQLException;
+    public abstract T buildObjectFromResultSet(ResultSet resultSet) throws SQLException;
 
+    @Override
     protected List<T> all(){
         try{
-            ResultSet resultSet = dataBaseConnection.executeQuery(Select.from(table()));
-            List<T> list = new ArrayList<>();
+            ResultSet resultSet = dataBaseConnection.sendQuery(Select.from(table()));
+            List<T> toReturn = new ArrayList<>();
 
             while (resultSet.next()){
-                list.add(buildObject(resultSet));
+                toReturn.add(buildObjectFromResultSet(resultSet));
             }
 
-            return list;
+            return toReturn;
         }catch (Exception e){
             return Collections.EMPTY_LIST;
         }
     }
 
+    @Override
     protected Optional<T> findById(Object id){
         try {
-            Select query = Select.from(table()).where(idField()).equal(id);
-            ResultSet resultSet = dataBaseConnection.executeQuery(query);
+            ResultSet resultSet = dataBaseConnection.sendQuery(
+                    Select.from(table()).where(idField()).equal(id)
+            );
+
             resultSet.next();
 
-            T object = buildObject(resultSet);
-
-            return Optional.ofNullable(object);
+            return Optional.ofNullable(buildObjectFromResultSet(resultSet));
         }catch (Exception e){
             return Optional.empty();
         }
     }
 
     @SneakyThrows
+    @Override
     protected void save(T toPersist){
         Object id = invokeGetterMethod(toPersist, idField());
         boolean exists = findById(id).isPresent();
 
-        if(exists){
+        if(exists)
             updateExistingObject(toPersist, id);
-        }else{
+        else
             persistNewObject(toPersist);
-        }
     }
 
     @SneakyThrows
     private void updateExistingObject(T toUpdate, Object id){
-        UpdateOptionInitial updateQuery = this.updateQueryOnSave;
-
-        UpdateOptionFull1 updateOptionFull1 = updateQuery.set(idField(), id);
+        UpdateOptionFull1 updateOptionFull1 = this.updateQueryOnSave.set(idField(), id);
 
         for(String field : getFields()){
-            //TODO IMprove this shity code
+            //TODO Improve
             if(field.equalsIgnoreCase(idField())) continue;
 
-            if(usingValueObjects()){
-                updateOptionFull1 = updateOptionFull1.andSet(field, invokeValueObjectMethodGetter(toUpdate, field, mapper().getValueObjectField()));
-            }else{
-                updateOptionFull1 = updateOptionFull1.andSet(field, invokeGetterMethod(toUpdate, field));
-            }
+            updateOptionFull1 = usingValueObjects() ?
+                    updateOptionFull1.andSet(field, invokeValueObjectMethodGetter(toUpdate, field, valueObjectField())) :
+                    updateOptionFull1.andSet(field, invokeGetterMethod(toUpdate, field));
         }
 
-        String query = updateOptionFull1.where(idField())
-                .equal(id)
-                .build();
-
-        dataBaseConnection.executeUpdate(query);
+        dataBaseConnection.sendUpdate(
+                updateOptionFull1.where(idField()).equal(id)
+        );
     }
 
     @SneakyThrows
@@ -103,25 +99,24 @@ public abstract class DatabaseRepository<T> {
         List<Object> valuesToAddInQuery = new ArrayList<>();
 
         for(String field : getFields()){
-            Object value;
-
-            if(usingValueObjects()){
-                value = invokeValueObjectMethodGetter(toPersist, field, mapper().getValueObjectField());
-            }else{
-                value = invokeGetterMethod(toPersist, field);
-            }
+            Object value = usingValueObjects() ?
+                    invokeValueObjectMethodGetter(toPersist, field, valueObjectField()) :
+                    invokeGetterMethod(toPersist, field);
 
             valuesToAddInQuery.add(value);
         }
 
-        String insertQuery = this.insertQueryOnSave.values(valuesToAddInQuery.toArray(new Object[0]));
-        dataBaseConnection.executeUpdate(insertQuery);
+        dataBaseConnection.sendUpdate(
+                insertQueryOnSave.values(valuesToAddInQuery.toArray(new Object[0]))
+        );
     }
 
     @SneakyThrows
+    @Override
     protected void deleteById(Object id){
-        Delete queryDelete = Delete.from(table()).where(idField()).equal(id);
-        dataBaseConnection.executeUpdate(queryDelete);
+        dataBaseConnection.sendUpdate(
+                Delete.from(table()).where(idField()).equal(id)
+        );
     }
 
     private String table(){
@@ -138,5 +133,9 @@ public abstract class DatabaseRepository<T> {
 
     private boolean usingValueObjects(){
         return this.mapper().isUsingValueObjects();
+    }
+
+    private String valueObjectField() {
+        return this.mapper().getValueObjectField();
     }
 }

@@ -1,15 +1,15 @@
 package es.jaime.mapper;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.util.Arrays;
 import java.util.List;
 
 public final class TableMapper<T> {
-    @Getter private final String table;
-    @Getter private final String idField;
-    @Getter private final List<String> fields;
+    @Getter @NonNull private final String table;
+    @Getter @NonNull  private final String idField;
+    @Getter @NonNull  private final List<String> fields;
     @Getter private final String valueObjectField;
     @Getter private boolean usingValueObjects;
 

@@ -22,6 +22,7 @@ public class Example extends DatabaseRepository<Cuenta> {
         );
 
         example.save(cuenta);
+        example.deleteById(1);
     }
 
     @Override
@@ -34,7 +35,7 @@ public class Example extends DatabaseRepository<Cuenta> {
     }
 
     @Override
-    public Cuenta buildObject(ResultSet result) throws SQLException {
+    public Cuenta buildObjectFromResultSet(ResultSet result) throws SQLException {
         return new Cuenta(
                 result.getInt("id"),
                 result.getString("username"),
