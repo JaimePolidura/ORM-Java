@@ -16,13 +16,21 @@ public class Example extends DatabaseRepository<Cuenta> {
         System.out.println(example.findById(3));
 
         example.all().forEach(System.out::println);
+
+        Cuenta cuenta = new Cuenta(
+                1,"juan", "121212", 1, "USER"
+        );
+
+        example.save(cuenta);
     }
 
     @Override
     public TableMapper<Cuenta> mapper() {
         return TableMapper
                 .table("cuentas")
-                .idField("id");
+                .idField("id")
+                .fields("id", "username", "password", "active", "roles")
+                .build();
     }
 
     @Override

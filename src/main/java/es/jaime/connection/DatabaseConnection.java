@@ -33,4 +33,8 @@ public abstract class DatabaseConnection {
     public void executeUpdate(WriteQuery query) throws SQLException {
         connection.createStatement().executeUpdate(query.toString());
     }
+
+    public void executeUpdate(String query) throws SQLException {
+        connection.createStatement().executeUpdate(query);
+    }
 }
