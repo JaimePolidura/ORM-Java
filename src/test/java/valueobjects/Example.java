@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.function.Function;
 
-public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
+public class Example extends DataBaseRepositoryValueObjects<Cuenta, CuentaId> {
     public Example() {
         super(new DatabaseConnectity());
     }
@@ -22,18 +22,12 @@ public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
         example.all().forEach(c -> System.out.println(c.getUsername().value()));
 
         Cuenta cuenta = Cuenta.create(
-                1,"paco", "121212", 1, "USER"
+                1,"a", "121212", 1, "USER"
         );
 
         example.save(cuenta);
 
         example.deleteById(new CuentaId(1));
-    }
-
-
-    @Override
-    protected DatabaseConnection databaseConnection() {
-        return new DatabaseConnectity();
     }
 
     @Override
@@ -57,8 +51,8 @@ public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
     }
 
     @Override
-    public Function<Object, Object> idValueObjectToIdPrimitive() {
-        return valueObject -> ((CuentaId) (valueObject)).value();
+    public Function<CuentaId, Object> idValueObjectToIdPrimitive() {
+        return CuentaId::value;
     }
 
     @Override

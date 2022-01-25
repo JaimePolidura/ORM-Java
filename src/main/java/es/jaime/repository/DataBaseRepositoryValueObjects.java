@@ -8,22 +8,21 @@ import es.jaimetruman.insert.Insert;
 import es.jaimetruman.insert.InsertOptionFinal;
 import es.jaimetruman.select.Select;
 import es.jaimetruman.update.Update;
-import es.jaimetruman.update.UpdateOptionFull1;
 import es.jaimetruman.update.UpdateOptionInitial;
 import lombok.SneakyThrows;
 
 import java.util.*;
 import java.util.function.Function;
 
-public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
+public abstract class DataBaseRepositoryValueObjects<T, I> extends Repostitory<T, I> {
     protected final DatabaseConnection databaseConnection;
 
     private final EntityMapper entityMapper;
     private final String table;
     private final String idField;
     private final List<String> fieldsNames;
-    protected final InsertOptionFinal insertQueryOnSave;
-    protected final UpdateOptionInitial updateQueryOnSave;
+    private final InsertOptionFinal insertQueryOnSave;
+    private final UpdateOptionInitial updateQueryOnSave;
 
     protected DataBaseRepositoryValueObjects(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
@@ -42,7 +41,7 @@ public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
     }
 
     @Override
-    protected Optional<T> findById(Object id) {
+    protected Optional<T> findById(I id) {
         return buildObjectFromQuery(
                 Select.from(table).where(idField).equal(idValueObjectToIdPrimitive().apply(id))
         );
@@ -50,7 +49,7 @@ public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
 
     @Override
     @SneakyThrows
-    protected void deleteById(Object id) {
+    protected void deleteById(I id) {
         databaseConnection.sendUpdate(
                 Delete.from(table).where(idField).equal(idValueObjectToIdPrimitive().apply(id))
         );
@@ -58,52 +57,23 @@ public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
 
     @Override
     protected void save(T toPersist) {
-        Object idValueObject = toValueObjects(toPersist).get(idField);
+        I idValueObject = (I) toValueObjects(toPersist).get(idField);
         boolean exists = findById(idValueObject).isPresent();
 
         if(exists){
-            updateExistingObject(toPersist, idValueObject);
+            Object idPrimitive = idValueObjectToIdPrimitive().apply(idValueObject);
+
+            super.updateExistingObject(toPersist, idPrimitive, updateQueryOnSave, fieldsNames);
         }else{
-            persistNewObject(toPersist);
+            super.persistNewObject(toPersist, fieldsNames, insertQueryOnSave);
         }
     }
 
-    @SneakyThrows
-    private void updateExistingObject(T toUpdate, Object idValueObject){
-        Object idPrimtive = idValueObjectToIdPrimitive().apply(idValueObject);
-        UpdateOptionFull1 updateQuery = this.updateQueryOnSave.set(idField, idPrimtive);
-        Map<String, Object> primitives = toPrimitives(toUpdate);
-
-        for(String fieldName : fieldsNames){
-            if(fieldName.equalsIgnoreCase(idField)) continue;
-
-            Object value = primitives.get(fieldName);
-
-            updateQuery = updateQuery.andSet(fieldName, value);
-        }
-
-        databaseConnection.sendUpdate(
-                updateQuery.where(idField).equal(idPrimtive)
-        );
+    @Override
+    protected DatabaseConnection databaseConnection() {
+        return this.databaseConnection;
     }
 
-    @SneakyThrows
-    private void persistNewObject(T toPersist){
-        List<Object> valuesToAddInQuery = new ArrayList<>();
-        Map<String, Object> toPrimitves = toPrimitives(toPersist);
-
-        for(String fieldName : fieldsNames){
-            Object value = toPrimitves.get(fieldName);
-
-            valuesToAddInQuery.add(value);
-        }
-
-        databaseConnection.sendUpdate(
-                insertQueryOnSave.values(valuesToAddInQuery.toArray(new Object[0]))
-        );
-    }
-
-    public abstract Function<Object, Object> idValueObjectToIdPrimitive();
-    public abstract Map<String, Object> toValueObjects(T aggregate);
-    public abstract Map<String, Object> toPrimitives(T aggregate);
+    protected abstract Function<I, Object> idValueObjectToIdPrimitive();
+    protected abstract Map<String, Object> toValueObjects(T aggregate);
 }

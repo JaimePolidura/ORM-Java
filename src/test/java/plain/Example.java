@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class Example extends DataBaseRepository<Cuenta> {
+public class Example extends DataBaseRepository<Cuenta, Integer> {
     public Example() {
         super(new DatabaseConnectity());
     }
@@ -21,17 +21,12 @@ public class Example extends DataBaseRepository<Cuenta> {
         example.all().forEach(c -> System.out.println(c.getUsername()));
 
         Cuenta cuenta = new Cuenta(
-                1,"pep", "121212", 1, "USER"
+                1,"corod", "121212", 1, "USER"
         );
 
         example.save(cuenta);
 
         example.deleteById(1);
-    }
-
-    @Override
-    protected DatabaseConnection databaseConnection() {
-        return new DatabaseConnectity();
     }
 
     @Override
