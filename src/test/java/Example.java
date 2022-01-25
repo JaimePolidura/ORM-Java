@@ -4,6 +4,8 @@ import es.jaime.mapper.TableMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
     public Example() {
@@ -13,7 +15,7 @@ public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
     public static void main(String[] args) {
         Example example = new Example();
 
-        System.out.println(example.findById(new CuentaId(3)).get().getUsername().value());
+        example.findById(new CuentaId(3));
 
         example.all().forEach(c -> System.out.println(c.getUsername().value()));
 
@@ -27,11 +29,11 @@ public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
     }
 
     @Override
-    public TableMapper<Cuenta> mapper() {
+    public TableMapper mapper() {
         return TableMapper
                 .table("cuentas")
                 .idField("id")
-                .fields("id", "username", "password", "active", "roles")
+                .classToMap(Cuenta.class)
                 .usingValueObjects("value")
                 .build();
     }

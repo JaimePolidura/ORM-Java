@@ -2,8 +2,12 @@ package es.jaime.utils;
 
 import lombok.SneakyThrows;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.channels.Pipe;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.lang.String.*;
 
@@ -29,5 +33,12 @@ public final class ReflectionUtils {
     @SneakyThrows
     public static Object invokeMethod(Object instance, String methodNmae){
         return instance.getClass().getDeclaredMethod(methodNmae).invoke(instance);
+    }
+
+    @SneakyThrows
+    public static List<String> getFieldsFrom(Class<?> classToGetFields){
+        return Arrays.stream(classToGetFields.getDeclaredFields())
+                .map(Field::getName)
+                .collect(Collectors.toList());
     }
 }

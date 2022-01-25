@@ -1,11 +1,7 @@
 package es.jaime.repository;
 
 import es.jaime.connection.DatabaseConnection;
-import es.jaimetruman.insert.Insert;
-import es.jaimetruman.insert.InsertOptionFinal;
-import es.jaimetruman.update.Update;
 import es.jaimetruman.update.UpdateOptionFull1;
-import es.jaimetruman.update.UpdateOptionInitial;
 import lombok.SneakyThrows;
 
 import java.util.ArrayList;
@@ -15,17 +11,8 @@ import java.util.Optional;
 import static es.jaime.utils.ReflectionUtils.*;
 
 public abstract class DataBaseRepositoryValueObjects<T> extends DatabaseRepository<T> {
-    private final InsertOptionFinal insertQueryOnSave;
-    private final UpdateOptionInitial updateQueryOnSave;
-    private final DatabaseConnection dataBaseConnection;
-
     public DataBaseRepositoryValueObjects(DatabaseConnection dataBaseConnection) {
         super(dataBaseConnection);
-
-        this.dataBaseConnection = dataBaseConnection;
-        this.insertQueryOnSave = Insert.table(table())
-                .fields(mapper().getFields().toArray(new String[0]));
-        this.updateQueryOnSave = Update.table(mapper().getTable());
     }
 
     @Override
@@ -35,12 +22,12 @@ public abstract class DataBaseRepositoryValueObjects<T> extends DatabaseReposito
 
     @Override
     protected void save(T toPersist) {
-        Object id = invokeGetterMethod(toPersist, idField());
+        Object idValueObject = invokeGetterMethod(toPersist, idField());
 
-        boolean exists = findById(id).isPresent();
+        boolean exists = findById(idValueObject).isPresent();
 
         if(exists)
-            updateExistingObject(toPersist, id);
+            updateExistingObject(toPersist, idValueObject);
         else
             persistNewObject(toPersist);
     }
@@ -48,16 +35,18 @@ public abstract class DataBaseRepositoryValueObjects<T> extends DatabaseReposito
     @SneakyThrows
     private void updateExistingObject(T toUpdate, Object idValueObject){
         Object id = invokeMethod(idValueObject, valueObjectField());
-        UpdateOptionFull1 updateOptionFull1 = this.updateQueryOnSave.set(idField(), id);
+        UpdateOptionFull1 updateQuery = this.updateQueryOnSave.set(idField(), id);
 
         for(String field : getFields()){
             if(field.equalsIgnoreCase(idField())) continue;
 
-            updateOptionFull1 = updateOptionFull1.andSet(field, invokeValueObjectMethodGetter(toUpdate, field, valueObjectField()));
+            Object valueObjectValue = invokeValueObjectMethodGetter(toUpdate, field, valueObjectField());
+
+            updateQuery = updateQuery.andSet(field, valueObjectValue);
         }
 
         dataBaseConnection.sendUpdate(
-                updateOptionFull1.where(idField()).equal(id)
+                updateQuery.where(idField()).equal(id)
         );
     }
 
@@ -81,20 +70,12 @@ public abstract class DataBaseRepositoryValueObjects<T> extends DatabaseReposito
         super.deleteById(invokeMethod(id, valueObjectField()));
     }
 
-    private String table(){
-        return this.mapper().getTable();
-    }
-
     private String idField(){
         return this.mapper().getIdField();
     }
 
     private List<String> getFields(){
         return this.mapper().getFields();
-    }
-
-    private boolean usingValueObjects(){
-        return this.mapper().isUsingValueObjects();
     }
 
     private String valueObjectField() {

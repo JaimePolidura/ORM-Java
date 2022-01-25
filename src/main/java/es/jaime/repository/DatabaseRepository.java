@@ -6,6 +6,7 @@ import es.jaimetruman.delete.Delete;
 import es.jaimetruman.insert.Insert;
 import es.jaimetruman.insert.InsertOptionFinal;
 import es.jaimetruman.select.Select;
+import es.jaimetruman.select.SelectOptionCompare;
 import es.jaimetruman.update.Update;
 import es.jaimetruman.update.UpdateOptionFull1;
 import es.jaimetruman.update.UpdateOptionInitial;
@@ -18,19 +19,22 @@ import java.util.*;
 import static es.jaime.utils.ReflectionUtils.*;
 
 public abstract class DatabaseRepository<T> extends Repostitory<T>{
-    private final DatabaseConnection dataBaseConnection;
-    private final InsertOptionFinal insertQueryOnSave;
-    private final UpdateOptionInitial updateQueryOnSave;
+    protected final DatabaseConnection dataBaseConnection;
+
+    protected final SelectOptionCompare selectQueryOnFindById;
+    protected final InsertOptionFinal insertQueryOnSave;
+    protected final UpdateOptionInitial updateQueryOnSave;
 
     public DatabaseRepository(DatabaseConnection dataBaseConnection) {
         this.dataBaseConnection = dataBaseConnection;
 
-        this.insertQueryOnSave = Insert.table(table())
-                .fields(mapper().getFields().toArray(new String[0]));
+        List<String> fields = mapper().getFields();
+        this.insertQueryOnSave = Insert.table(table()).fields(fields.toArray(new String[0]));
         this.updateQueryOnSave = Update.table(mapper().getTable());
+        this.selectQueryOnFindById = Select.from(table()).where(idField());
     }
 
-    public abstract TableMapper<T> mapper();
+    public abstract TableMapper mapper();
     public abstract T buildObjectFromResultSet(ResultSet resultSet) throws SQLException;
 
     @Override
@@ -51,9 +55,10 @@ public abstract class DatabaseRepository<T> extends Repostitory<T>{
 
     @Override
     protected Optional<T> findById(Object id){
+        System.out.println("---------------");
         try {
             ResultSet resultSet = dataBaseConnection.sendQuery(
-                    Select.from(table()).where(idField()).equal(id)
+                    this.selectQueryOnFindById.equal(id)
             );
 
             resultSet.next();
@@ -79,17 +84,18 @@ public abstract class DatabaseRepository<T> extends Repostitory<T>{
 
     @SneakyThrows
     private void updateExistingObject(T toUpdate, Object id){
-        UpdateOptionFull1 updateOptionFull1 = this.updateQueryOnSave.set(idField(), id);
+        UpdateOptionFull1 updateQuery = this.updateQueryOnSave.set(idField(), id);
 
         for(String field : getFields()){
-            //TODO Improve
             if(field.equalsIgnoreCase(idField())) continue;
 
-            updateOptionFull1 = updateOptionFull1.andSet(field, invokeGetterMethod(toUpdate, field));
+            Object value = invokeGetterMethod(toUpdate, field);
+
+            updateQuery = updateQuery.andSet(field, value);
         }
 
         dataBaseConnection.sendUpdate(
-                updateOptionFull1.where(idField()).equal(id)
+                updateQuery.where(idField()).equal(id)
         );
     }
 
@@ -126,13 +132,5 @@ public abstract class DatabaseRepository<T> extends Repostitory<T>{
 
     private List<String> getFields(){
         return this.mapper().getFields();
-    }
-
-    private boolean usingValueObjects(){
-        return this.mapper().isUsingValueObjects();
-    }
-
-    private String valueObjectField() {
-        return this.mapper().getValueObjectField();
     }
 }

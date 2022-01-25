@@ -1,19 +1,19 @@
 package es.jaime.mapper;
 
+import es.jaime.utils.ReflectionUtils;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.util.Arrays;
 import java.util.List;
 
 public final class TableMapper<T> {
     @Getter @NonNull private final String table;
-    @Getter @NonNull  private final String idField;
-    @Getter @NonNull  private final List<String> fields;
+    @Getter @NonNull private final String idField;
+    @Getter @NonNull private final List<String> fields;
     @Getter private final String valueObjectField;
     @Getter private boolean usingValueObjects;
 
-    public TableMapper(String table, String idField, List<String> fields, String valueObjectField) {
+    public TableMapper(String table, String idField ,List<String> fields, String valueObjectField) {
         this.table = table;
         this.idField = idField;
         this.fields = fields;
@@ -22,7 +22,7 @@ public final class TableMapper<T> {
         this.usingValueObjects = valueObjectField != null && !valueObjectField.equalsIgnoreCase("");
     }
 
-    public static class TableMapperBuilder{
+    public static class TableMapperBuilder<T>{
         private String table;
         private String idField;
         private List<String> fields;
@@ -38,8 +38,8 @@ public final class TableMapper<T> {
             return this;
         }
 
-        public TableMapperBuilder fields(String... fields){
-            this.fields = Arrays.asList(fields);
+        public TableMapperBuilder classToMap(Class<T> classToMap){
+            this.fields = ReflectionUtils.getFieldsFrom(classToMap);
 
             return this;
         }

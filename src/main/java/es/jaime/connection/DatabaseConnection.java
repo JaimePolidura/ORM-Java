@@ -30,6 +30,10 @@ public abstract class DatabaseConnection {
         return connection.createStatement().executeQuery(query.toString());
     }
 
+    public ResultSet sendQuery(String query) throws SQLException {
+        return connection.createStatement().executeQuery(query);
+    }
+
     public void sendUpdate(WriteQuery query) throws SQLException {
         connection.createStatement().executeUpdate(query.toString());
     }
