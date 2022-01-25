@@ -2,7 +2,6 @@ package es.jaime.repository;
 
 import es.jaime.connection.DatabaseConnection;
 import es.jaime.mapper.EntityMapper;
-import es.jaime.utils.IntrospectionUtils;
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.insert.InsertOptionFinal;
 import es.jaimetruman.update.UpdateOptionFull1;
