@@ -1,11 +1,13 @@
+package valueobjects;
+
 import es.jaime.connection.DatabaseConnection;
+import es.jaime.mapper.EntityMapper;
 import es.jaime.repository.DataBaseRepositoryValueObjects;
-import es.jaime.mapper.TableMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.function.Function;
 
 public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
     public Example() {
@@ -15,12 +17,12 @@ public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
     public static void main(String[] args) {
         Example example = new Example();
 
-        example.findById(new CuentaId(3));
+        System.out.println(example.findById(new CuentaId(3)).get().getUsername().value());
 
         example.all().forEach(c -> System.out.println(c.getUsername().value()));
 
         Cuenta cuenta = Cuenta.create(
-                1,"papa", "121212", 1, "USER"
+                1,"paco", "121212", 1, "USER"
         );
 
         example.save(cuenta);
@@ -28,13 +30,18 @@ public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
         example.deleteById(new CuentaId(1));
     }
 
+
     @Override
-    public TableMapper mapper() {
-        return TableMapper
+    protected DatabaseConnection databaseConnection() {
+        return new DatabaseConnectity();
+    }
+
+    @Override
+    protected EntityMapper<Cuenta> entityMapper() {
+        return EntityMapper
                 .table("cuentas")
                 .idField("id")
                 .classToMap(Cuenta.class)
-                .usingValueObjects("value")
                 .build();
     }
 
@@ -46,6 +53,33 @@ public class Example extends DataBaseRepositoryValueObjects<Cuenta> {
                 result.getString("password"),
                 result.getInt("active"),
                 result.getString("roles")
+        );
+    }
+
+    @Override
+    public Function<Object, Object> idValueObjectToIdPrimitive() {
+        return valueObject -> ((CuentaId) (valueObject)).value();
+    }
+
+    @Override
+    public Map<String, Object> toValueObjects(Cuenta aggregate) {
+        return Map.of(
+                "id", aggregate.getId(),
+                "username", aggregate.getUsername(),
+                "password", aggregate.getPassword(),
+                "active", aggregate.getActive(),
+                "roles", aggregate.getRoles()
+        );
+    }
+
+    @Override
+    public Map<String, Object> toPrimitives(Cuenta aggregate) {
+        return Map.of(
+                "id", aggregate.getId().value(),
+                "username", aggregate.getUsername().value(),
+                "password", aggregate.getPassword().value(),
+                "active", aggregate.getActive().value(),
+                "roles", aggregate.getRoles().value()
         );
     }
 

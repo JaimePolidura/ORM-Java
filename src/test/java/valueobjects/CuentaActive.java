@@ -1,3 +1,5 @@
+package valueobjects;
+
 public class CuentaActive {
     private final int value;
 

@@ -1,7 +1,9 @@
-public class CuentaPassword {
+package valueobjects;
+
+public class CuentaRoles {
     private final String username;
 
-    public CuentaPassword(String username) {
+    public CuentaRoles(String username) {
         this.username = username;
     }
 

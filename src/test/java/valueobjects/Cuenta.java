@@ -1,3 +1,5 @@
+package valueobjects;
+
 import lombok.Data;
 
 @Data

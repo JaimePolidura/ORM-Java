@@ -1,3 +1,5 @@
+package valueobjects;
+
 public class CuentaId {
     private final int value;
 

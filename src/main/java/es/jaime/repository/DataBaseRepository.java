@@ -13,9 +13,8 @@ import es.jaimetruman.update.UpdateOptionInitial;
 import lombok.SneakyThrows;
 
 import java.util.*;
-import java.util.function.Function;
 
-public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
+public abstract class DataBaseRepository<T> extends Repostitory<T> {
     protected final DatabaseConnection databaseConnection;
 
     private final EntityMapper entityMapper;
@@ -25,7 +24,7 @@ public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
     protected final InsertOptionFinal insertQueryOnSave;
     protected final UpdateOptionInitial updateQueryOnSave;
 
-    protected DataBaseRepositoryValueObjects(DatabaseConnection databaseConnection) {
+    protected DataBaseRepository(DatabaseConnection databaseConnection) {
         this.databaseConnection = databaseConnection;
         this.entityMapper = entityMapper();
         this.table = entityMapper.getTable();
@@ -44,7 +43,7 @@ public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
     @Override
     protected Optional<T> findById(Object id) {
         return buildObjectFromQuery(
-                Select.from(table).where(idField).equal(idValueObjectToIdPrimitive().apply(id))
+                Select.from(table).where(idField).equal(id)
         );
     }
 
@@ -52,26 +51,25 @@ public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
     @SneakyThrows
     protected void deleteById(Object id) {
         databaseConnection.sendUpdate(
-                Delete.from(table).where(idField).equal(idValueObjectToIdPrimitive().apply(id))
+                Delete.from(table).where(idField).equal(id)
         );
     }
 
     @Override
     protected void save(T toPersist) {
-        Object idValueObject = toValueObjects(toPersist).get(idField);
-        boolean exists = findById(idValueObject).isPresent();
+        Object id = toPrimitives(toPersist).get(idField);
+        boolean exists = findById(id).isPresent();
 
         if(exists){
-            updateExistingObject(toPersist, idValueObject);
+            updateExistingObject(toPersist, id);
         }else{
             persistNewObject(toPersist);
         }
     }
 
     @SneakyThrows
-    private void updateExistingObject(T toUpdate, Object idValueObject){
-        Object idPrimtive = idValueObjectToIdPrimitive().apply(idValueObject);
-        UpdateOptionFull1 updateQuery = this.updateQueryOnSave.set(idField, idPrimtive);
+    private void updateExistingObject(T toUpdate, Object id){
+        UpdateOptionFull1 updateQuery = this.updateQueryOnSave.set(idField, id);
         Map<String, Object> primitives = toPrimitives(toUpdate);
 
         for(String fieldName : fieldsNames){
@@ -83,7 +81,7 @@ public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
         }
 
         databaseConnection.sendUpdate(
-                updateQuery.where(idField).equal(idPrimtive)
+                updateQuery.where(idField).equal(id)
         );
     }
 
@@ -103,7 +101,5 @@ public abstract class DataBaseRepositoryValueObjects<T> extends Repostitory<T> {
         );
     }
 
-    public abstract Function<Object, Object> idValueObjectToIdPrimitive();
-    public abstract Map<String, Object> toValueObjects(T aggregate);
     public abstract Map<String, Object> toPrimitives(T aggregate);
 }
