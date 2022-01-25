@@ -27,17 +27,17 @@ public final class ReflectionUtils {
     public static Object invokeValueObjectMethodGetter(Object aggreageteInstance, String fieldAggregate, String fieldValueObject){
         Object valueObject = invokeGetterMethod(aggreageteInstance, fieldAggregate);
 
-        return valueObject.getClass().getDeclaredMethod(fieldValueObject).invoke(valueObject);
+        return valueObject.getClass().getMethod(fieldValueObject).invoke(valueObject);
     }
 
     @SneakyThrows
     public static Object invokeMethod(Object instance, String methodNmae){
-        return instance.getClass().getDeclaredMethod(methodNmae).invoke(instance);
+        return instance.getClass().getMethod(methodNmae).invoke(instance);
     }
 
     @SneakyThrows
     public static List<String> getFieldsFrom(Class<?> classToGetFields){
-        return Arrays.stream(classToGetFields.getDeclaredFields())
+        return Arrays.stream(classToGetFields.getFields())
                 .map(Field::getName)
                 .collect(Collectors.toList());
     }
