@@ -15,7 +15,7 @@ public final class IntrospectionUtils {
                 toReturn.add(field.getName());
             }
 
-            classToCheck = classToGetFields.getSuperclass();
+            classToCheck = classToCheck.getSuperclass();
         }
 
         return toReturn;
