@@ -2,6 +2,7 @@ package es.jaime.connection;
 
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.WriteQuery;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
@@ -10,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class DatabaseConnection {
-    private Connection connection;
+    @Getter private Connection connection;
 
     public DatabaseConnection() {
         this.connect();
