@@ -5,10 +5,10 @@ import lombok.SneakyThrows;
 
 import java.sql.Connection;
 
-public final class TransacionManager {
+public final class DatabaseTransacionManager {
     private final Connection connection;
 
-    public TransacionManager(DatabaseConnection databaseConnection) {
+    public DatabaseTransacionManager(DatabaseConnection databaseConnection) {
         this.connection = databaseConnection.getConnection();
     }
 
