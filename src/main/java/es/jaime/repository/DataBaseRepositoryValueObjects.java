@@ -1,6 +1,6 @@
 package es.jaime.repository;
 
-import es.jaime.connection.DatabaseConnection;
+import es.jaime.configuration.DatabaseConfiguration;
 import es.jaime.mapper.EntityMapper;
 import es.jaime.utils.IntrospectionUtils;
 import es.jaimetruman.delete.Delete;
@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 
 public abstract class DataBaseRepositoryValueObjects<T, I> extends Repostitory<T, I> {
-    protected final DatabaseConnection databaseConnection;
+    protected final DatabaseConfiguration databaseConnection;
 
     private final EntityMapper entityMapper;
     private final String table;
@@ -24,7 +24,7 @@ public abstract class DataBaseRepositoryValueObjects<T, I> extends Repostitory<T
     private final InsertOptionFinal insertQueryOnSave;
     private final UpdateOptionInitial updateQueryOnSave;
 
-    protected DataBaseRepositoryValueObjects(DatabaseConnection databaseConnection) {
+    protected DataBaseRepositoryValueObjects(DatabaseConfiguration databaseConnection) {
         this.databaseConnection = databaseConnection;
         this.entityMapper = entityMapper();
         this.table = entityMapper.getTable();
@@ -70,7 +70,7 @@ public abstract class DataBaseRepositoryValueObjects<T, I> extends Repostitory<T
     }
 
     @Override
-    protected DatabaseConnection databaseConnection() {
+    protected DatabaseConfiguration databaseConnection() {
         return this.databaseConnection;
     }
 

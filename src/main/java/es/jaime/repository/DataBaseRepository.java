@@ -1,6 +1,6 @@
 package es.jaime.repository;
 
-import es.jaime.connection.DatabaseConnection;
+import es.jaime.configuration.DatabaseConfiguration;
 import es.jaime.mapper.EntityMapper;
 import es.jaime.utils.IntrospectionUtils;
 import es.jaimetruman.delete.Delete;
@@ -14,7 +14,7 @@ import lombok.SneakyThrows;
 import java.util.*;
 
 public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
-    protected final DatabaseConnection databaseConnection;
+    protected final DatabaseConfiguration databaseConnection;
 
     private final EntityMapper entityMapper;
     private final String table;
@@ -23,7 +23,7 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     private final InsertOptionFinal insertQueryOnSave;
     private final UpdateOptionInitial updateQueryOnSave;
 
-    protected DataBaseRepository(DatabaseConnection databaseConnection) {
+    protected DataBaseRepository(DatabaseConfiguration databaseConnection) {
         this.databaseConnection = databaseConnection;
         this.entityMapper = entityMapper();
         this.table = entityMapper.getTable();
@@ -66,7 +66,7 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     }
 
     @Override
-    protected DatabaseConnection databaseConnection() {
+    protected DatabaseConfiguration databaseConnection() {
         return this.databaseConnection;
     }
 }

@@ -1,6 +1,6 @@
 package es.jaime.repository;
 
-import es.jaime.connection.DatabaseConnection;
+import es.jaime.configuration.DatabaseConfiguration;
 import es.jaime.mapper.EntityMapper;
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.insert.InsertOptionFinal;
@@ -18,7 +18,7 @@ public abstract class Repostitory<T, I> {
     protected abstract void save(T toPersist);
     protected abstract void deleteById(I id);
 
-    protected abstract DatabaseConnection databaseConnection();
+    protected abstract DatabaseConfiguration databaseConnection();
     protected abstract EntityMapper<T> entityMapper();
     public abstract T buildObjectFromResultSet(ResultSet resultSet) throws SQLException;
     protected abstract Map<String, Object> toPrimitives(T aggregate);

@@ -1,6 +1,6 @@
 package es.jaime.transacions;
 
-import es.jaime.connection.DatabaseConnection;
+import es.jaime.configuration.DatabaseConfiguration;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
@@ -8,7 +8,7 @@ import java.sql.Connection;
 public final class DatabaseTransacionManager {
     private final Connection connection;
 
-    public DatabaseTransacionManager(DatabaseConnection databaseConnection) {
+    public DatabaseTransacionManager(DatabaseConfiguration databaseConnection) {
         this.connection = databaseConnection.getConnection();
     }
 
