@@ -4,12 +4,7 @@ import es.jaimetruman.ReadQuery;
 import es.jaimetruman.WriteQuery;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.apache.ibatis.jdbc.ScriptRunner;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.Reader;
 import java.sql.*;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +14,6 @@ public abstract class DatabaseConfiguration {
 
     public DatabaseConfiguration() {
         this.connect();
-        this.runScripts();
     }
 
     @SneakyThrows
@@ -31,7 +25,7 @@ public abstract class DatabaseConfiguration {
     }
 
     @SneakyThrows
-    private void runScripts(){
+    public void runCommands(){
         if(getCommandsToRun().isEmpty()){
             return;
         }
