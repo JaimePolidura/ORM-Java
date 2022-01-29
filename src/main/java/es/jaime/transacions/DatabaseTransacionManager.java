@@ -8,8 +8,8 @@ import java.sql.Connection;
 public final class DatabaseTransacionManager {
     private final Connection connection;
 
-    public DatabaseTransacionManager(DatabaseConfiguration databaseConnection) {
-        this.connection = databaseConnection.getConnection();
+    public DatabaseTransacionManager(DatabaseConfiguration databaseConfiguration) {
+        this.connection = databaseConfiguration.getConnection();
     }
 
     @SneakyThrows

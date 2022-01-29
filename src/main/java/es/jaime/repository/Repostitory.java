@@ -24,6 +24,10 @@ public abstract class Repostitory<T, I> {
     protected abstract Map<String, Object> toPrimitives(T aggregate);
 
     protected List<T> buildListFromQuery(ReadQuery readQuery){
+        return this.buildListFromQuery(readQuery.toString());
+    }
+
+    protected List<T> buildListFromQuery(String readQuery){
         try {
             ResultSet resultSet = databaseConnection().sendQuery(readQuery);
             List<T> toReturn = new ArrayList<>();
@@ -39,6 +43,10 @@ public abstract class Repostitory<T, I> {
     }
 
     public Optional<T> buildObjectFromQuery(ReadQuery readQuery){
+        return buildObjectFromQuery(readQuery.toString());
+    }
+
+    public Optional<T> buildObjectFromQuery(String readQuery){
         try {
             ResultSet resultSet = databaseConnection().sendQuery(readQuery);
 
