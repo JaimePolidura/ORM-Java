@@ -12,10 +12,6 @@ import java.util.List;
 public abstract class DatabaseConfiguration {
     @Getter private Connection connection;
 
-    public DatabaseConfiguration() {
-        this.connect();
-    }
-
     @SneakyThrows
     public final void connect(){
         if(connection == null || connection.isClosed()){
@@ -26,6 +22,9 @@ public abstract class DatabaseConfiguration {
 
     @SneakyThrows
     public void runCommands(){
+        if(connection == null || connection.isClosed()){
+            this.connect();
+        }
         if(getCommandsToRun().isEmpty()){
             return;
         }
