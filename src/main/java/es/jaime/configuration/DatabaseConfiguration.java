@@ -32,6 +32,12 @@ public abstract class DatabaseConfiguration {
         }
     }
 
+    public void sendStatement(String statement) throws SQLException {
+        connectIfNotConnected();
+
+        this.connection.createStatement().execute(statement);
+    }
+
     public final ResultSet sendQuery(ReadQuery query) throws SQLException {
         connectIfNotConnected();
 
