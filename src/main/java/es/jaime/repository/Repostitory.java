@@ -1,5 +1,6 @@
 package es.jaime.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import es.jaime.configuration.DatabaseConfiguration;
 import es.jaime.mapper.EntityMapper;
 import es.jaimetruman.ReadQuery;
@@ -13,6 +14,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 public abstract class Repostitory<T, I> {
+    protected static final ObjectMapper MAPPER = new ObjectMapper();
+
     protected abstract List<T> all();
     protected abstract Optional<T> findById(I id);
     protected abstract void save(T toPersist);
@@ -21,7 +24,10 @@ public abstract class Repostitory<T, I> {
     protected abstract DatabaseConfiguration databaseConnection();
     protected abstract EntityMapper<T> entityMapper();
     public abstract T buildObjectFromResultSet(ResultSet resultSet) throws SQLException;
-    protected abstract Map<String, Object> toPrimitives(T aggregate);
+
+    protected Map<String, Object> toPrimitives(T aggregate){
+        return MAPPER.convertValue(aggregate, Map.class);
+    }
 
     protected List<T> buildListFromQuery(ReadQuery readQuery){
         return this.buildListFromQuery(readQuery.toString());
