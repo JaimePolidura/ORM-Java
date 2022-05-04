@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import es.jaime.configuration.DatabaseConfiguration;
 import es.jaime.mapper.EntityMapper;
 import es.jaimetruman.ReadQuery;
+import es.jaimetruman.WriteQuery;
 import es.jaimetruman.insert.InsertOptionFinal;
 import es.jaimetruman.update.UpdateOptionFull1;
 import es.jaimetruman.update.UpdateOptionInitial;
@@ -27,6 +28,16 @@ public abstract class Repostitory<T, I> {
 
     protected Map<String, Object> toPrimitives(T aggregate){
         return MAPPER.convertValue(aggregate, Map.class);
+    }
+
+    @SneakyThrows
+    protected void execute(String query){
+        this.databaseConnection().sendStatement(query);
+    }
+
+    @SneakyThrows
+    protected void execute(WriteQuery query){
+        this.databaseConnection().sendUpdate(query);
     }
 
     protected List<T> buildListFromQuery(ReadQuery readQuery){
