@@ -11,6 +11,7 @@ import es.jaimetruman.update.Update;
 import es.jaimetruman.update.UpdateOptionInitial;
 import lombok.SneakyThrows;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
@@ -56,8 +57,15 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
 
     @Override
     protected void save(T toPersist) {
-        I id = (I) toPrimitives(toPersist).get(idField);
-        boolean exists = findById(id).isPresent();
+        Object idObject = toPrimitives(toPersist).get(this.idField);
+
+        ParameterizedType paramType = (ParameterizedType) this.getClass().getGenericSuperclass();
+        Class<I> classOfId = (Class<I>) paramType.getActualTypeArguments()[1];
+
+        System.out.println(classOfId);
+
+        I idValue = classOfId.equals(UUID.class) ? (I) UUID.fromString(String.valueOf(idObject)) : (I) idObject;
+        boolean exists = findById(idValue).isPresent();
 
         if(exists)
             super.updateExistingObject(toPersist, id, updateQueryOnSave, fieldsNames);
