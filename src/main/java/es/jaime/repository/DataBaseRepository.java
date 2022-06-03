@@ -42,7 +42,7 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     @Override
     protected Optional<T> findById(I id) {
         return buildObjectFromQuery(
-                Select.from(table).where(idField).equal(id)
+                Select.from(table).where(idField).equal(id.toString())
         );
     }
 
@@ -50,7 +50,7 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     @SneakyThrows
     protected void deleteById(I id) {
         databaseConnection.sendUpdate(
-                Delete.from(table).where(idField).equal(id)
+                Delete.from(table).where(idField).equal(id.toString())
         );
     }
 
