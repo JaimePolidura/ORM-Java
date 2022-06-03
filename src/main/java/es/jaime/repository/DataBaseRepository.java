@@ -56,11 +56,12 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
 
     @Override
     protected void save(T toPersist) {
-        I id = (I) toPrimitives(toPersist).get(idField);
-        boolean exists = findById(id).isPresent();
+        Object idObject = toPrimitives(toPersist).get(this.idField);
+        I idValue = idObject instanceof UUID ? (I) UUID.fromString(String.valueOf(idObject)) : (I) idObject;
+        boolean exists = findById(idValue).isPresent();
 
         if(exists)
-            super.updateExistingObject(toPersist, id, updateQueryOnSave, fieldsNames);
+            super.updateExistingObject(toPersist, idValue, updateQueryOnSave, fieldsNames);
         else
             super.persistNewObject(toPersist, fieldsNames, insertQueryOnSave);
     }
