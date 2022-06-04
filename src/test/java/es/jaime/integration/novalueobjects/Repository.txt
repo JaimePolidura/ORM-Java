@@ -8,8 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public final class Repository extends DataBaseRepository<Model, Integer> {
+public final class Repository extends DataBaseRepository<Model, UUID> {
     public Repository(String url) {
         super(new DatabaseConfiguration() {
             @Override
@@ -23,7 +24,7 @@ public final class Repository extends DataBaseRepository<Model, Integer> {
         super.save(model);
     }
 
-    public Optional<Model> findById(int id){
+    public Optional<Model> findById(UUID id){
         return super.findById(id);
     }
 
@@ -31,7 +32,7 @@ public final class Repository extends DataBaseRepository<Model, Integer> {
         return super.all();
     }
 
-    public void deleteById(int id){
+    public void deleteById(UUID id){
 
     }
 
@@ -46,7 +47,7 @@ public final class Repository extends DataBaseRepository<Model, Integer> {
     @Override
     public Model buildObjectFromResultSet(ResultSet rs) throws SQLException {
         return new Model(
-                rs.getInt("id"),
+                UUID.fromString(rs.getString("id")),
                 rs.getString("keymodel"),
                 rs.getString("valuemodel")
         );

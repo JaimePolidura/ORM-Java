@@ -62,13 +62,17 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
         ParameterizedType paramType = (ParameterizedType) this.getClass().getGenericSuperclass();
         Class<I> classOfId = (Class<I>) paramType.getActualTypeArguments()[1];
 
-        System.out.println(classOfId);
+        System.out.println("---------------------------");
+        System.out.println(classOfId.getName());
+        System.out.println(idObject instanceof UUID);
+        System.out.println(classOfId.equals(UUID.class));
+        System.out.println(classOfId.equals(UUID.class));
 
         I idValue = classOfId.equals(UUID.class) ? (I) UUID.fromString(String.valueOf(idObject)) : (I) idObject;
         boolean exists = findById(idValue).isPresent();
 
         if(exists)
-            super.updateExistingObject(toPersist, id, updateQueryOnSave, fieldsNames);
+            super.updateExistingObject(toPersist, idValue, updateQueryOnSave, fieldsNames);
         else
             super.persistNewObject(toPersist, fieldsNames, insertQueryOnSave);
     }

@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+import java.util.UUID;
+
 @AllArgsConstructor
 public final class Model {
-    @Getter private int id;
+    @Getter private UUID id;
     @Getter private final String keymodel;
     @Getter private final String valuemodel;
 
