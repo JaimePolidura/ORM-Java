@@ -84,9 +84,7 @@ public abstract class Repostitory<T, I> {
 
         for(String fieldName : fieldsNames){
             if(fieldName.equalsIgnoreCase(idField)) continue;
-
             Object value = primitives.get(fieldName);
-
             updateQuery = updateQuery.andSet(fieldName, value);
         }
 
