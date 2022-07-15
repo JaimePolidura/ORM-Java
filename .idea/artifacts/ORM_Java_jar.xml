@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="ORM-Java:jar">
+    <output-path>$PROJECT_DIR$/../_libs</output-path>
+    <root id="archive" name="ORM-Java.jar">
+      <element id="module-output" name="ORM-Java" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/protobuf/protobuf-java/3.11.4/protobuf-java-3.11.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/vavr/vavr/0.10.4/vavr-0.10.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/vavr/vavr-match/0.10.4/vavr-match-0.10.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/mybatis/mybatis/3.4.5/mybatis-3.4.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../_libs/MySQL-Query-Builder.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.6.0/jackson-annotations-2.6.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.6.3/jackson-databind-2.6.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.6.3/jackson-core-2.6.3.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -43,7 +43,7 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     @Override
     protected Optional<T> findById(I id) {
         return buildObjectFromQuery(
-                Select.from(table).where(idField).equal(id.toString())
+                Select.from(table).where(idField).equal(id)
         );
     }
 
@@ -51,7 +51,7 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     @SneakyThrows
     protected void deleteById(I id) {
         databaseConnection.sendUpdate(
-                Delete.from(table).where(idField).equal(id.toString())
+                Delete.from(table).where(idField).equal(id)
         );
     }
 
@@ -61,12 +61,6 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
 
         ParameterizedType paramType = (ParameterizedType) this.getClass().getGenericSuperclass();
         Class<I> classOfId = (Class<I>) paramType.getActualTypeArguments()[1];
-
-        System.out.println("---------------------------");
-        System.out.println(classOfId.getName());
-        System.out.println(idObject instanceof UUID);
-        System.out.println(classOfId.equals(UUID.class));
-        System.out.println(classOfId.equals(UUID.class));
 
         I idValue = classOfId.equals(UUID.class) ? (I) UUID.fromString(String.valueOf(idObject)) : (I) idObject;
         boolean exists = findById(idValue).isPresent();

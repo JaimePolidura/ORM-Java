@@ -1,7 +1,9 @@
 package es.jaime.integration.novalueobjects;
 
+import io.vavr.collection.List;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.UUID;
 
 public final class RepositoryCrudTest {
@@ -15,7 +17,7 @@ public final class RepositoryCrudTest {
 
     @Test
     public void shouldSave(){
-        this.repository.save(new Model(UUID.randomUUID(), "key", "value"));
+        this.repository.save(new Model(UUID.randomUUID(), "key", "value", Arrays.asList("hola", "adios")));
         this.repository.findAll().forEach(System.out::println);
     }
 }

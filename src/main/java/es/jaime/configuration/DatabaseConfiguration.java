@@ -14,6 +14,10 @@ public abstract class DatabaseConfiguration {
 
     protected abstract String url();
 
+    public boolean showQueries(){
+        return false;
+    }
+
     public List<String> getCommandsToRun(){
         return Collections.EMPTY_LIST;
     }
@@ -28,6 +32,7 @@ public abstract class DatabaseConfiguration {
         List<String> commandsToRun = this.getCommandsToRun();
 
         for (String command : commandsToRun) {
+            if(showQueries()) System.out.println(command);
             statement.execute(command);
         }
     }
@@ -35,11 +40,15 @@ public abstract class DatabaseConfiguration {
     public void sendStatement(String statement) throws SQLException {
         connectIfNotConnected();
 
+        if(showQueries()) System.out.println(statement);
+
         this.connection.createStatement().execute(statement);
     }
 
     public final ResultSet sendQuery(ReadQuery query) throws SQLException {
         connectIfNotConnected();
+
+        if(showQueries()) System.out.println(query);
 
         return connection.createStatement().executeQuery(query.toString());
     }
@@ -47,17 +56,23 @@ public abstract class DatabaseConfiguration {
     public final ResultSet sendQuery(String query) throws SQLException {
         connectIfNotConnected();
 
+        if(showQueries()) System.out.println(query);
+
         return connection.createStatement().executeQuery(query);
     }
 
     public final void sendUpdate(WriteQuery query) throws SQLException {
         connectIfNotConnected();
 
+        if(showQueries()) System.out.println(query);
+
         connection.createStatement().executeUpdate(query.toString());
     }
 
     public final void sendUpdate(String query) throws SQLException {
         connectIfNotConnected();
+
+        if(showQueries()) System.out.println(query);
 
         connection.createStatement().executeUpdate(query);
     }

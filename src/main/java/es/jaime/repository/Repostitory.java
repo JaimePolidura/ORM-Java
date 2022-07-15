@@ -78,6 +78,7 @@ public abstract class Repostitory<T, I> {
     @SneakyThrows
     protected void updateExistingObject(T toUpdate, Object id, UpdateOptionInitial updateQueryOnSave, List<String> fieldsNames){
         String idField = entityMapper().getIdField();
+
         UpdateOptionFull1 updateQuery = updateQueryOnSave.set(entityMapper().getIdField(), id);
         Map<String, Object> primitives = toPrimitives(toUpdate);
 

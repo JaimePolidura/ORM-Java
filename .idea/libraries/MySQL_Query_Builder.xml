@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="MySQL-Query-Builder">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../_libs/MySQL-Query-Builder.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
