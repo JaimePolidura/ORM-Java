@@ -2,6 +2,7 @@ package es.jaime.repository;
 
 import es.jaime.configuration.DatabaseConfiguration;
 import es.jaime.mapper.EntityMapper;
+import es.jaime.utils.ExceptionUtils;
 import es.jaime.utils.IntrospectionUtils;
 import es.jaimetruman.delete.Delete;
 import es.jaimetruman.insert.Insert;
@@ -9,14 +10,11 @@ import es.jaimetruman.insert.InsertOptionFinal;
 import es.jaimetruman.select.Select;
 import es.jaimetruman.update.Update;
 import es.jaimetruman.update.UpdateOptionInitial;
-import lombok.SneakyThrows;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
-    protected final DatabaseConfiguration databaseConnection;
-
     private final EntityMapper entityMapper;
     private final String table;
     private final String idField;
@@ -25,7 +23,7 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     private final UpdateOptionInitial updateQueryOnSave;
 
     protected DataBaseRepository(DatabaseConfiguration databaseConnection) {
-        this.databaseConnection = databaseConnection;
+        super(databaseConnection);
         this.entityMapper = entityMapper();
         this.table = entityMapper.getTable();
         this.idField = entityMapper.getIdField();
@@ -35,7 +33,6 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     }
 
     @Override
-    @SneakyThrows
     protected List<T> all() {
         return buildListFromQuery(Select.from(entityMapper.getTable()));
     }
@@ -48,17 +45,13 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     }
 
     @Override
-    @SneakyThrows
     protected void deleteById(I id) {
-        databaseConnection.sendUpdate(
-                Delete.from(table).where(idField).equal(id)
-        );
+        ExceptionUtils.runChecked(() -> databaseConnection.sendUpdate(Delete.from(table).where(idField).equal(id)));
     }
 
     @Override
-    protected void save(T toPersist) {
+    protected <O extends T> void save(O toPersist) {
         Object idObject = toPrimitives(toPersist).get(this.idField);
-
         ParameterizedType paramType = (ParameterizedType) this.getClass().getGenericSuperclass();
         Class<I> classOfId = (Class<I>) paramType.getActualTypeArguments()[1];
 
@@ -72,7 +65,7 @@ public abstract class DataBaseRepository<T, I> extends Repostitory<T, I> {
     }
 
     @Override
-    protected DatabaseConfiguration databaseConnection() {
+    protected DatabaseConfiguration databaseConfiguration() {
         return this.databaseConnection;
     }
 }

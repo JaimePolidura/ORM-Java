@@ -1,5 +1,6 @@
 package es.jaime.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.WriteQuery;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class DatabaseConfiguration {
-    @Getter private Connection connection;
+    private Connection connection;
 
     protected abstract String url();
 
@@ -20,6 +21,16 @@ public abstract class DatabaseConfiguration {
 
     public List<String> getCommandsToRun(){
         return Collections.EMPTY_LIST;
+    }
+
+    public ObjectMapper objectMapper(){
+        return new ObjectMapper();
+    }
+
+    public Connection getConnection() {
+        connectIfNotConnected();
+
+        return this.connection;
     }
 
     @SneakyThrows
