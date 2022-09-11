@@ -13,7 +13,8 @@ import java.util.List;
 public abstract class DatabaseConfiguration {
     private ConnectionManager connectionManager;
 
-    public DatabaseConfiguration() throws Exception {
+    @SneakyThrows
+    public DatabaseConfiguration()  {
         this.connectionManager = new ConnectionManager(this.url());
     }
 
