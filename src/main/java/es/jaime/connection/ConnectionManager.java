@@ -10,8 +10,10 @@ public final class ConnectionManager {
     private final String url;
     private Connection connection;
 
+    @SneakyThrows
     public ConnectionManager(String url) {
         this.url = url;
+        this.connection = this.connect();
     }
 
     @SneakyThrows
