@@ -18,11 +18,14 @@ public final class ConnectionManager {
 
     @SneakyThrows
     public boolean isConnected() {
-        return this.connection == null || this.connection.isClosed();
+        return this.connection != null && !this.connection.isClosed();
     }
 
     public Connection getConnection() throws Exception {
-        return this.isConnected() ? connection : this.connect();
+        if(!this.isConnected())
+            this.connection = this.connect();
+
+        return this.connection;
     }
 
     public void disconnect() throws SQLException {
