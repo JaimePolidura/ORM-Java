@@ -11,11 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class DatabaseConfiguration {
-    private ConnectionManager connectionManager;
-
-    public DatabaseConfiguration()  {
-        this.connectionManager = new ConnectionManager(this.url());
-    }
+    protected ConnectionManager connectionManager;
 
     public abstract String url();
 
