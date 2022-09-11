@@ -52,6 +52,7 @@ public abstract class Repostitory<T, I> {
         return this.buildListFromQuery(readQuery.toString());
     }
 
+    @SneakyThrows
     protected List<T> buildListFromQuery(String readQuery){
         try {
             ResultSet resultSet = databaseConfiguration().sendQuery(readQuery);
@@ -73,6 +74,7 @@ public abstract class Repostitory<T, I> {
         return buildObjectFromQuery(readQuery.toString());
     }
 
+    @SneakyThrows
     public Optional<T> buildObjectFromQuery(String readQuery){
         try {
             ResultSet resultSet = databaseConfiguration().sendQuery(readQuery);

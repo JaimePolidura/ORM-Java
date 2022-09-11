@@ -1,9 +1,9 @@
 package es.jaime.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import es.jaime.connection.ConnectionManager;
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.WriteQuery;
-import lombok.Getter;
 import lombok.SneakyThrows;
 
 import java.sql.*;
@@ -11,9 +11,13 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class DatabaseConfiguration {
-    private Connection connection;
+    private ConnectionManager connectionManager;
 
-    protected abstract String url();
+    public DatabaseConfiguration() throws Exception {
+        this.connectionManager = new ConnectionManager(this.url());
+    }
+
+    public abstract String url();
 
     public boolean showQueries(){
         return false;
@@ -27,19 +31,15 @@ public abstract class DatabaseConfiguration {
         return new ObjectMapper();
     }
 
-    public Connection getConnection() {
-        connectIfNotConnected();
-
-        return this.connection;
+    public ConnectionManager getConnectionManager() {
+        return this.connectionManager;
     }
 
     @SneakyThrows
     public void runCommands(){
-        connectIfNotConnected();
-
         if(getCommandsToRun().isEmpty()) return;
 
-        Statement statement = connection.createStatement();
+        Statement statement = connectionManager.getConnection().createStatement();
         List<String> commandsToRun = this.getCommandsToRun();
 
         for (String command : commandsToRun) {
@@ -48,51 +48,37 @@ public abstract class DatabaseConfiguration {
         }
     }
 
-    public void sendStatement(String statement) throws SQLException {
-        connectIfNotConnected();
-
+    public void sendStatement(String statement) throws Exception {
         if(showQueries()) System.out.println(statement);
 
-        this.connection.createStatement().execute(statement);
+        this.getConnection().createStatement().execute(statement);
     }
 
-    public final ResultSet sendQuery(ReadQuery query) throws SQLException {
-        connectIfNotConnected();
-
+    public final ResultSet sendQuery(ReadQuery query) throws Exception {
         if(showQueries()) System.out.println(query);
 
-        return connection.createStatement().executeQuery(query.toString());
+        return this.getConnection().createStatement().executeQuery(query.toString());
     }
 
-    public final ResultSet sendQuery(String query) throws SQLException {
-        connectIfNotConnected();
-
+    public final ResultSet sendQuery(String query) throws Exception {
         if(showQueries()) System.out.println(query);
 
-        return connection.createStatement().executeQuery(query);
+        return this.getConnection().createStatement().executeQuery(query);
     }
 
-    public final void sendUpdate(WriteQuery query) throws SQLException {
-        connectIfNotConnected();
-
+    public final void sendUpdate(WriteQuery query) throws Exception {
         if(showQueries()) System.out.println(query);
 
-        connection.createStatement().executeUpdate(query.toString());
+        this.getConnection().createStatement().executeUpdate(query.toString());
     }
 
-    public final void sendUpdate(String query) throws SQLException {
-        connectIfNotConnected();
-
+    public final void sendUpdate(String query) throws Exception {
         if(showQueries()) System.out.println(query);
 
-        connection.createStatement().executeUpdate(query);
+        this.getConnection().createStatement().executeUpdate(query);
     }
 
-    @SneakyThrows
-    private void connectIfNotConnected(){
-        if(this.connection == null || connection.isClosed()){
-            Class.forName("com.mysql.jdbc.Driver");
-            this.connection = DriverManager.getConnection(url());
-        }
+    private Connection getConnection() throws Exception {
+        return connectionManager.getConnection();
     }
 }

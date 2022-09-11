@@ -1,29 +1,27 @@
 package es.jaime.transacions;
 
-import es.jaime.configuration.DatabaseConfiguration;
+import es.jaime.connection.ConnectionManager;
 import lombok.SneakyThrows;
 
-import java.sql.Connection;
-
 public final class DatabaseTransacionManager {
-    private final Connection connection;
+    private final ConnectionManager connectionManager;
 
-    public DatabaseTransacionManager(DatabaseConfiguration databaseConfiguration) {
-        this.connection = databaseConfiguration.getConnection();
+    public DatabaseTransacionManager(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
     }
 
     @SneakyThrows
     public void start(){
-        this.connection.setAutoCommit(false);
+        this.connectionManager.getConnection().setAutoCommit(false);
     }
 
     @SneakyThrows
     public void rollback(){
-        this.connection.rollback();
+        this.connectionManager.getConnection().rollback();
     }
 
     @SneakyThrows
     public void commit(){
-        this.connection.commit();
+        this.connectionManager.getConnection().commit();
     }
 }
