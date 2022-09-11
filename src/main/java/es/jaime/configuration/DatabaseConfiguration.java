@@ -13,7 +13,6 @@ import java.util.List;
 public abstract class DatabaseConfiguration {
     private ConnectionManager connectionManager;
 
-    @SneakyThrows
     public DatabaseConfiguration()  {
         this.connectionManager = new ConnectionManager(this.url());
     }
