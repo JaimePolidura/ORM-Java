@@ -31,13 +31,15 @@
         <dependency>
             <groupId>com.github.JaimeTruman</groupId>
             <artifactId>Java-DDD</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.15</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-            <version>3.4.5</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.3.1</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.vavr/vavr -->
@@ -57,7 +59,13 @@
         <dependency>
             <groupId>com.github.JaimeTruman</groupId>
             <artifactId>MySQL-Query-Builder</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
