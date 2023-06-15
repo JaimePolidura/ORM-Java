@@ -91,8 +91,8 @@ public abstract class Repository<E, I, T> {
             }
 
             connectionManager.sendUpdate(Insert.table(entityMapper.getTable())
-                    .fields(fieldValues.toArray(new String[0]))
-                    .values(fieldValues));
+                    .fields(fieldNames.toArray(new String[0]))
+                    .values(fieldValues.toArray(new Object[0])));
         });
     }
 
