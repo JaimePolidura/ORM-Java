@@ -89,9 +89,9 @@ public abstract class Repository<E, I, T> {
                 Object fieldValue = getFieldValue(toPersist, fieldName);
                 fieldValues.add(fieldValue);
             }
-
+            
             connectionManager.sendUpdate(Insert.table(entityMapper.getTable())
-                    .fields(fieldValues.toArray(new String[0]))
+                    .fields(fieldNames.toArray(new String[0]))
                     .values(fieldValues));
         });
     }
