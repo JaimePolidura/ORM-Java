@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.Objects;
 
 @AllArgsConstructor
 public final class ConditionalClassMapping<E, T> {
@@ -18,9 +19,9 @@ public final class ConditionalClassMapping<E, T> {
     }
 
     public Class<? extends E> getMappingClass(ResultSet resultSet) {
-        T type = typeValueAccessor.applyOrRethrow(resultSet, "Type not found on class " + typeClass.getName());
+        T type = typeValueAccessor.applyOrRethrow(resultSet);
 
-        return entitiesTypeMapper.get(type);
+        return Objects.requireNonNull(entitiesTypeMapper.get(type), "Type not mapped in " + typeClass.getName());
     }
 
     public static <E, T> ConditionalClassMappingBuilder<E, T> builder() {

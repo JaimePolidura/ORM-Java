@@ -3,10 +3,10 @@ package es.jaime.connection;
 import es.jaime.javaddd.domain.database.TransactionManager;
 import lombok.SneakyThrows;
 
-public final class DatabaseTransacionManager implements TransactionManager {
+public final class DatabaseTransactionManager implements TransactionManager {
     private final ConnectionManager connectionManager;
 
-    public DatabaseTransacionManager(ConnectionManager connectionManager) {
+    public DatabaseTransactionManager(ConnectionManager connectionManager) {
         this.connectionManager = connectionManager;
     }
 
