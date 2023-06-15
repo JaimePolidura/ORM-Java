@@ -2,6 +2,7 @@ package es.jaime.repository;
 
 import es.jaime.connection.ConnectionManager;
 import es.jaime.deserializer.ObjectDeserializerResultset;
+import es.jaime.javaddd.application.utils.ExceptionUtils;
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.WriteQuery;
 import es.jaimetruman.delete.Delete;
@@ -89,9 +90,9 @@ public abstract class Repository<E, I, T> {
                 Object fieldValue = getFieldValue(toPersist, fieldName);
                 fieldValues.add(fieldValue);
             }
-
+            
             connectionManager.sendUpdate(Insert.table(entityMapper.getTable())
-                    .fields(fieldValues.toArray(new String[0]))
+                    .fields(fieldValues.stream().map(Object::toString).toArray(String[]::new))
                     .values(fieldValues));
         });
     }
