@@ -86,6 +86,14 @@ public abstract class Repository<E, I, T> {
             List<Object> fieldValues = new ArrayList<>(fieldNames.size());
 
             for (String fieldName : fieldNames) {
+                System.out.println(fieldName);
+            }
+
+            for (Object fieldValue : fieldValues) {
+                System.out.println(fieldValue);
+            }
+
+            for (String fieldName : fieldNames) {
                 Object fieldValue = getFieldValue(toPersist, fieldName);
                 fieldValues.add(fieldValue);
             }
@@ -94,6 +102,12 @@ public abstract class Repository<E, I, T> {
                     .fields(fieldValues.toArray(new String[0]))
                     .values(fieldValues.toArray(new Object[0])));
         });
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Insert.table("Tabla")
+                .fields(List.of("jugadorId", "nombre").toArray(new String[0]))
+                .values(List.of(UUID.randomUUID(), "Jaime").toArray(new Object[0])));
     }
 
     protected void execute(String query){
