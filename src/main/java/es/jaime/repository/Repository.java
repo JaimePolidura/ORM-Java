@@ -133,12 +133,16 @@ public abstract class Repository<E, I, T> {
     public List<E> buildListFromQuery(String readQuery) {
         try {
             ResultSet resultSet = connectionManager.sendQuery(readQuery);
+            if(!resultSet.next()){
+                return Collections.EMPTY_LIST;
+            }
+
             Class<? extends E> mappingClass = entityMapper().getMappingClass(resultSet);
             List<E> toReturn = new ArrayList<>();
 
-            while (resultSet.next()){
+            do {
                 toReturn.add(objectDeserializerResulset.deserialize(resultSet, mappingClass));
-            }
+            }while (resultSet.next());
 
             return toReturn;
         } catch (SQLException e) {
