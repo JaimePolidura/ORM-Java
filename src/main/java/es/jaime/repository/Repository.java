@@ -116,15 +116,14 @@ public abstract class Repository<E, I, T> {
     public Optional<E> buildObjectFromQuery(String readQuery){
         try {
             ResultSet resultSet = connectionManager.sendQuery(readQuery);
-
-            if(!resultSet.isBeforeFirst()){
+            if(!resultSet.next()){
                 return Optional.empty();
             }
 
-            resultSet.next();
             Class<? extends E> mappingClass = entityMapper().getMappingClass(resultSet);
+            E deserialized = objectDeserializerResulset.deserialize(resultSet, mappingClass);
 
-            return Optional.ofNullable(objectDeserializerResulset.deserialize(resultSet, mappingClass));
+            return Optional.of(deserialized);
         } catch (SQLException e) {
             return Optional.empty();
         }
