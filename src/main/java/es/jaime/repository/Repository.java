@@ -89,13 +89,13 @@ public abstract class Repository<E, I, T> {
                 System.out.println(fieldName);
             }
 
-            for (Object fieldValue : fieldValues) {
-                System.out.println(fieldValue);
-            }
-
             for (String fieldName : fieldNames) {
                 Object fieldValue = getFieldValue(toPersist, fieldName);
                 fieldValues.add(fieldValue);
+            }
+            
+            for (Object fieldValue : fieldValues) {
+                System.out.println(fieldValue);
             }
 
             connectionManager.sendUpdate(Insert.table(entityMapper.getTable())
