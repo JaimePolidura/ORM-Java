@@ -1,16 +1,14 @@
-package es.jaime.repository;
-
-import es.jaime.connection.ConnectionManager;
-import lombok.*;
+//package es.jaime.repository;
+//
+//import es.jaime.connection.ConnectionManager;
+//import lombok.*;
 //import org.junit.Assert;
 //import org.junit.Test;
-//
 //import java.sql.ResultSet;
 //import java.util.Optional;
-import java.util.UUID;
-//
+//import java.util.UUID;
 //import static org.mockito.Mockito.*;
-
+//
 public final class RepositoryTest {
 //    @Test
 //    @SneakyThrows
@@ -39,6 +37,8 @@ public final class RepositoryTest {
 //        when(resultSet.getString("jugadorId")).thenReturn(jugadorId.toString());
 //        when(resultSet.getString("nombre")).thenReturn("Jaime");
 //        when(resultSet.getDouble("dinero")).thenReturn(10.0d);
+//        when(resultSet.getString("tipo")).thenReturn(Tipo.OFFLINE.toString());
+//        when(resultSet.next()).thenReturn(true);
 //
 //        when(connectionManager.sendQuery(any(String.class))).thenReturn(resultSet);
 //
@@ -47,29 +47,35 @@ public final class RepositoryTest {
 //        Assert.assertTrue(optional.isPresent());
 //        Assert.assertTrue(optional.get().nombre.equalsIgnoreCase("Jaime"));
 //        Assert.assertEquals(10.0d, optional.get().dinero, 0.0);
+//        Assert.assertEquals(Tipo.OFFLINE, optional.get().tipo);
 //        Assert.assertEquals(optional.get().jugadorId, jugadorId);
 //    }
-
-    public static class RepositoryTested extends Repository<Jugador, UUID, Object> {
-        public RepositoryTested(ConnectionManager connectionManager) {
-            super(connectionManager);
-        }
-
-        @Override
-        public EntityMapper<Jugador, Object> entityMapper() {
-            return EntityMapper.builder()
-                    .table("jugadores")
-                    .idField("jugadorId")
-                    .classesToMap(Jugador.class)
-                    .build();
-        }
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Jugador {
-        @Getter private UUID jugadorId;
-        @Getter private String nombre;
-        @Getter private double dinero;
-    }
+//
+//    public static class RepositoryTested extends Repository<Jugador, UUID, Object> {
+//        public RepositoryTested(ConnectionManager connectionManager) {
+//            super(connectionManager);
+//        }
+//
+//        @Override
+//        public EntityMapper<Jugador, Object> entityMapper() {
+//            return EntityMapper.builder()
+//                    .table("jugadores")
+//                    .idField("jugadorId")
+//                    .classesToMap(Jugador.class)
+//                    .build();
+//        }
+//    }
+//
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class Jugador {
+//        @Getter private UUID jugadorId;
+//        @Getter private String nombre;
+//        @Getter private double dinero;
+//        @Getter private Tipo tipo;
+//    }
+//
+//    public enum Tipo {
+//        ONLINE, OFFLINE
+//    }
 }

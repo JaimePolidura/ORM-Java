@@ -33,6 +33,14 @@
     </build>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+<!--                <dependency>-->
+<!--                    <groupId>org.mockito</groupId>-->
+<!--                    <artifactId>mockito-core</artifactId>-->
+<!--                    <version>5.3.1</version>-->
+<!--                    <scope>test</scope>-->
+<!--                </dependency>-->
+
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
@@ -45,14 +53,6 @@
             <artifactId>Java-DDD</artifactId>
             <version>1.1.15</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
-<!--        <dependency>-->
-<!--            <groupId>org.mockito</groupId>-->
-<!--            <artifactId>mockito-core</artifactId>-->
-<!--            <version>5.3.1</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/io.vavr/vavr -->
         <dependency>
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.github.JaimeTruman</groupId>
             <artifactId>MySQL-Query-Builder</artifactId>
-            <version>1.0.9</version>
+            <version>1.0.10</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

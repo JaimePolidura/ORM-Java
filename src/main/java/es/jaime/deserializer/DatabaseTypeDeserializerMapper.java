@@ -19,9 +19,23 @@ public final class DatabaseTypeDeserializerMapper {
 
     public Object deserialize(Class<?> type, ResultSet resultSet, String fieldName) {
         return rethrowChecked(() -> {
-            DatabaseTypeDeserializer databaseTypeDeserializer = deserializers.get(type);
+            DatabaseTypeDeserializer databaseTypeDeserializer = getDeserializer(type);
 
             return databaseTypeDeserializer.deserialize(fieldName, resultSet, type);
         });
+    }
+
+    private DatabaseTypeDeserializer<?> getDeserializer(Class<?> type) {
+        Class<?> actual = type;
+
+        while (actual != Object.class) {
+            if(deserializers.containsKey(actual)){
+                return deserializers.get(actual);
+            }
+
+            actual = actual.getSuperclass();
+        }
+
+        return deserializers.get(String.class);
     }
 }
