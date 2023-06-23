@@ -24,7 +24,7 @@ public final class DatabaseTypeDeserializerMapper {
             return databaseTypeDeserializer.deserialize(fieldName, resultSet, type);
         });
     }
-    
+
     private DatabaseTypeDeserializer<?> getDeserializer(Class<?> clazz) {
         Class<?> actual = clazz;
 
