@@ -112,7 +112,23 @@ public abstract class Repository<E, I, T> {
         return buildObjectFromQuery(readQuery.toString());
     }
 
-    @SneakyThrows
+    public double getDoubleByQuery(ReadQuery readQuery) {
+        return getDoubleByQuery(readQuery.toString());
+    }
+
+    public double getDoubleByQuery(String query) {
+        try {
+            ResultSet resultSet = connectionManager.sendQuery(query);
+            if(!resultSet.next()){
+                return 0.0d;
+            }
+
+            return resultSet.getDouble(1);
+        }catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public Optional<E> buildObjectFromQuery(String readQuery){
         try {
             ResultSet resultSet = connectionManager.sendQuery(readQuery);
@@ -124,12 +140,11 @@ public abstract class Repository<E, I, T> {
             E deserialized = objectDeserializerResulset.deserialize(resultSet, mappingClass);
 
             return Optional.of(deserialized);
-        } catch (SQLException e) {
-            return Optional.empty();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 
-    @SneakyThrows
     public List<E> buildListFromQuery(String readQuery) {
         try {
             ResultSet resultSet = connectionManager.sendQuery(readQuery);
@@ -145,10 +160,8 @@ public abstract class Repository<E, I, T> {
             }while (resultSet.next());
 
             return toReturn;
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-            return Collections.EMPTY_LIST;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
