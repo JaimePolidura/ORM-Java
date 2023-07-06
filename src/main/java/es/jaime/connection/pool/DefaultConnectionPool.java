@@ -2,17 +2,18 @@ package es.jaime.connection.pool;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static es.jaime.javaddd.application.utils.ExceptionUtils.*;
 
 public final class DefaultConnectionPool implements ConnectionPool {
-    private final Map<Long, ConnectionPoolEntry> connectionsByThread = new HashMap<>();
+    private final Map<Long, ConnectionPoolEntry> connectionsByThread;
     private final long connectionTimeoutMs;
     private final String url;
 
     public DefaultConnectionPool(long connectionTimeoutMs, String url) {
+        this.connectionsByThread = new ConcurrentHashMap<>();
         this.connectionTimeoutMs = connectionTimeoutMs;
         this.url = url;
     }
@@ -32,6 +33,11 @@ public final class DefaultConnectionPool implements ConnectionPool {
         }
 
         return poolEntry.getConnection();
+    }
+
+    @Override
+    public void shutdown() {
+        connectionsByThread.values().forEach(ConnectionPoolEntry::close);
     }
 
     private ConnectionPoolEntry recreateConnectionPoolEntry(long currentThreadId, ConnectionPoolEntry poolEntry) {
