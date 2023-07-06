@@ -1,4 +1,4 @@
-//package es.jaime.repository;
+package es.jaime.repository;
 //
 //import es.jaime.connection.ConnectionManager;
 //import lombok.*;

@@ -1,6 +1,8 @@
 package es.jaime.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import es.jaime.connection.pool.ConnectionPool;
+import es.jaime.connection.pool.DefaultConnectionPool;
 
 import java.util.Collections;
 import java.util.List;
@@ -8,8 +10,16 @@ import java.util.List;
 public abstract class DatabaseConfiguration {
     public abstract String url();
 
+    public long connectionTimeoutMs() {
+        return 8 * 60 * 60 * 1000;
+    }
+
     public boolean showQueries(){
         return false;
+    }
+
+    public ConnectionPool connectionPool() {
+        return new DefaultConnectionPool(connectionTimeoutMs(), url());
     }
 
     public List<String> getCommandsToRun(){
