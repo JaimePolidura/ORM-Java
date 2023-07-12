@@ -2,6 +2,7 @@ package es.jaime.connection;
 
 import es.jaime.configuration.DatabaseConfiguration;
 import es.jaime.connection.pool.ConnectionPool;
+import es.jaime.connection.pool.ConnectionPoolEntry;
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.WriteQuery;
 import lombok.SneakyThrows;
@@ -17,6 +18,10 @@ public final class ConnectionManager {
     public ConnectionManager(DatabaseConfiguration configuration) {
         this.connectionPool = configuration.connectionPool();
         this.configuration = configuration;
+    }
+
+    public ConnectionPool getPool() {
+        return this.connectionPool;
     }
 
     public Connection getConnection() {
@@ -56,6 +61,10 @@ public final class ConnectionManager {
     private Statement createStatement() throws SQLException {
         return connectionPool.acquire()
                 .createStatement();
+    }
+
+    public void shutdown() {
+        connectionPool.shutdown();
     }
 
     @SneakyThrows

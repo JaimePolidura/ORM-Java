@@ -2,7 +2,7 @@ package es.jaime.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.jaime.connection.pool.ConnectionPool;
-import es.jaime.connection.pool.DefaultConnectionPool;
+import es.jaime.connection.pool.PerThreadConnectionPool;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +19,7 @@ public abstract class DatabaseConfiguration {
     }
 
     public ConnectionPool connectionPool() {
-        return new DefaultConnectionPool(connectionTimeoutMs(), url());
+        return new PerThreadConnectionPool(connectionTimeoutMs(), url());
     }
 
     public List<String> getCommandsToRun(){

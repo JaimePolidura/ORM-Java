@@ -7,12 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static es.jaime.javaddd.application.utils.ExceptionUtils.*;
 
-public final class DefaultConnectionPool implements ConnectionPool {
+public final class PerThreadConnectionPool implements ConnectionPool {
     private final Map<Long, ConnectionPoolEntry> connectionsByThread;
     private final long connectionTimeoutMs;
     private final String url;
 
-    public DefaultConnectionPool(long connectionTimeoutMs, String url) {
+    public PerThreadConnectionPool(long connectionTimeoutMs, String url) {
         this.connectionsByThread = new ConcurrentHashMap<>();
         this.connectionTimeoutMs = connectionTimeoutMs;
         this.url = url;
@@ -33,6 +33,10 @@ public final class DefaultConnectionPool implements ConnectionPool {
         }
 
         return poolEntry.getConnection();
+    }
+
+    @Override
+    public void release(Connection connection) {
     }
 
     @Override
