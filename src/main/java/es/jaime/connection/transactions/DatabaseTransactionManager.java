@@ -8,33 +8,26 @@ import lombok.SneakyThrows;
 import java.sql.Connection;
 
 public final class DatabaseTransactionManager implements TransactionManager {
-    private final ThreadLocal<Connection> connectionThreadLocal;
-    private final ConnectionPool connectionPool;
+    private final ConnectionManager connectionManager;
 
     public DatabaseTransactionManager(ConnectionManager connectionManager) {
-        this.connectionPool = connectionManager.getPool();
-        this.connectionThreadLocal = new ThreadLocal<>();
+        this.connectionManager = connectionManager;
     }
 
     @SneakyThrows
     public void start() {
-        connectionThreadLocal.set(connectionPool.acquire());
-        connectionThreadLocal.get().setAutoCommit(false);
+        connectionManager.acquireConnection().setAutoCommit(true);
     }
 
     @SneakyThrows
     public void rollback(){
-        connectionThreadLocal.get().rollback();
-
-        connectionPool.release(connectionThreadLocal.get());
-        connectionThreadLocal.set(null);
+        connectionManager.acquireConnection().rollback();
+        connectionManager.releaseConnection();
     }
 
     @SneakyThrows
     public void commit(){
-        connectionThreadLocal.get().commit();
-
-        connectionPool.release(connectionThreadLocal.get());
-        connectionThreadLocal.set(null);
+        connectionManager.acquireConnection().commit();
+        connectionManager.releaseConnection();
     }
 }

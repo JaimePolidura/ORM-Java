@@ -2,7 +2,6 @@ package es.jaime.connection;
 
 import es.jaime.configuration.DatabaseConfiguration;
 import es.jaime.connection.pool.ConnectionPool;
-import es.jaime.connection.pool.ConnectionPoolEntry;
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.WriteQuery;
 import lombok.SneakyThrows;
@@ -11,6 +10,7 @@ import java.sql.*;
 import java.util.List;
 
 public final class ConnectionManager {
+    private final ThreadLocal<Connection> connectionThreadLocal;
     private final DatabaseConfiguration configuration;
     private final ConnectionPool connectionPool;
 
@@ -18,14 +18,24 @@ public final class ConnectionManager {
     public ConnectionManager(DatabaseConfiguration configuration) {
         this.connectionPool = configuration.connectionPool();
         this.configuration = configuration;
+        this.connectionThreadLocal = new ThreadLocal<>();
     }
 
-    public ConnectionPool getPool() {
-        return this.connectionPool;
+    public Connection acquireConnection() {
+        if(connectionThreadLocal.get() == null){
+            connectionThreadLocal.set(connectionPool.acquire());
+        }
+
+        return connectionThreadLocal.get();
     }
 
-    public Connection getConnection() {
-        return connectionPool.acquire();
+    public void releaseConnection() {
+        connectionPool.release(connectionThreadLocal.get());
+        connectionThreadLocal.remove();
+    }
+
+    public void shutdown() {
+        connectionPool.shutdown();
     }
 
     public ResultSet sendQuery(ReadQuery query) throws Exception {
@@ -61,10 +71,6 @@ public final class ConnectionManager {
     private Statement createStatement() throws SQLException {
         return connectionPool.acquire()
                 .createStatement();
-    }
-
-    public void shutdown() {
-        connectionPool.shutdown();
     }
 
     @SneakyThrows

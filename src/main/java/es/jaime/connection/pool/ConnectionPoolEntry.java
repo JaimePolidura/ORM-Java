@@ -13,11 +13,10 @@ public final class ConnectionPoolEntry {
     public static final int CONNECTION_IN_USE = 1;
     public static final int CONNECTION_CLOSED = 2;
 
-    @Getter
-    private final AtomicInteger state;
-    @Getter
-    private final long createdByThreadId;
-    private Connection connection;
+    @Getter private final AtomicInteger state;
+    @Getter private final long createdByThreadId;
+    @Getter private Connection connection;
+
     private long lastTimeAccessed;
 
     public ConnectionPoolEntry(Connection connection, long lastTimeAccessed) {
@@ -47,9 +46,5 @@ public final class ConnectionPoolEntry {
     public void close() {
         state.set(CONNECTION_CLOSED);
         ignoreException(connection::close);
-    }
-
-    public Connection getConnection() {
-        return connection;
     }
 }

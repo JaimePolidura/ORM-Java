@@ -40,7 +40,10 @@ public final class SharedConnectionPool implements ConnectionPool {
 
     @Override
     public void release(Connection connection) {
-        freeList.add(connectionsByThread.get(Thread.currentThread().getId()));
+        long threadId = Thread.currentThread().getId();
+
+        freeList.add(connectionsByThread.get(threadId));
+        connectionsByThread.remove(threadId);
     }
 
     @Override
