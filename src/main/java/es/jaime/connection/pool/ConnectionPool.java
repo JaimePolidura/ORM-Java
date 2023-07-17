@@ -7,5 +7,5 @@ public interface ConnectionPool {
 
     void release(Connection connection);
 
-    void shutdown();
+    void releaseAll();
 }

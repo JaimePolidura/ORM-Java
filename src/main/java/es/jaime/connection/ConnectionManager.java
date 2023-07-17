@@ -34,8 +34,8 @@ public final class ConnectionManager {
         connectionThreadLocal.remove();
     }
 
-    public void shutdown() {
-        connectionPool.shutdown();
+    public void releaseAllConnections() {
+        connectionPool.releaseAll();
     }
 
     public ResultSet sendQuery(ReadQuery query) throws Exception {

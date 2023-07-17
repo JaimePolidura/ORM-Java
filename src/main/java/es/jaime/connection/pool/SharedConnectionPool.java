@@ -47,7 +47,7 @@ public final class SharedConnectionPool implements ConnectionPool {
     }
 
     @Override
-    public void shutdown() {
+    public void releaseAll() {
         freeList.removeAll();
     }
 

@@ -40,7 +40,7 @@ public final class PerThreadConnectionPool implements ConnectionPool {
     }
 
     @Override
-    public void shutdown() {
+    public void releaseAll() {
         connectionsByThread.values().forEach(ConnectionPoolEntry::close);
     }
 
