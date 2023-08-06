@@ -28,6 +28,7 @@ public final class DatabaseTransacionExecutor {
             case RETHROW_AND_PRINT:
                 e.printStackTrace();
                 throw new RuntimeException(e.getMessage());
+            case IGNORE:
         }
     }
 

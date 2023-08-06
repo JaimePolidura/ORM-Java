@@ -16,7 +16,7 @@ public final class DatabaseTransactionManager implements TransactionManager {
 
     @SneakyThrows
     public void start() {
-        connectionManager.acquireConnection().setAutoCommit(true);
+        connectionManager.acquireConnection().setAutoCommit(false);
     }
 
     @SneakyThrows
