@@ -35,7 +35,7 @@ public final class ConnectionManager {
     }
 
     public void releaseAllConnections() {
-        connectionPool.releaseAll();
+        connectionPool.closeAll();
     }
 
     public ResultSet sendQuery(ReadQuery query) throws Exception {

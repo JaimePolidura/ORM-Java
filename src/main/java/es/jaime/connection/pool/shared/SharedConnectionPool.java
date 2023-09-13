@@ -1,4 +1,7 @@
-package es.jaime.connection.pool;
+package es.jaime.connection.pool.shared;
+
+import es.jaime.connection.pool.ConnectionPool;
+import es.jaime.connection.pool.ConnectionPoolEntry;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -30,6 +33,7 @@ public final class SharedConnectionPool implements ConnectionPool {
         }
         if(connectionFoundInFreeList && connectionPoolEntry.hasTimeoutPassed(connectionTimeoutMs)){
             freeList.remove(connectionPoolEntry);
+            connectionPoolEntry.close();
             connectionPoolEntry = createConnectionPoolEntry();
         }
 
@@ -47,7 +51,7 @@ public final class SharedConnectionPool implements ConnectionPool {
     }
 
     @Override
-    public void releaseAll() {
+    public void closeAll() {
         freeList.removeAll();
     }
 

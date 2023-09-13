@@ -1,5 +1,6 @@
-package es.jaime.connection.pool;
+package es.jaime.connection.pool.shared;
 
+import es.jaime.connection.pool.ConnectionPoolEntry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;

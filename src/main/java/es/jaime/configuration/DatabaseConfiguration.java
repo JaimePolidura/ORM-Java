@@ -2,7 +2,7 @@ package es.jaime.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.jaime.connection.pool.ConnectionPool;
-import es.jaime.connection.pool.PerThreadConnectionPool;
+import es.jaime.connection.pool.perthread.PerThreadConnectionPool;
 
 import java.util.Collections;
 import java.util.List;

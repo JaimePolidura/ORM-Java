@@ -1,4 +1,7 @@
-package es.jaime.connection.pool;
+package es.jaime.connection.pool.perthread;
+
+import es.jaime.connection.pool.ConnectionPool;
+import es.jaime.connection.pool.ConnectionPoolEntry;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -40,7 +43,7 @@ public final class PerThreadConnectionPool implements ConnectionPool {
     }
 
     @Override
-    public void releaseAll() {
+    public void closeAll() {
         connectionsByThread.values().forEach(ConnectionPoolEntry::close);
     }
 
