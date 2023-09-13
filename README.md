@@ -6,20 +6,6 @@
 MySQLUsersRepository repository = new MySQLUsersRepository(new ConnectionManager(new MySQLConfiguration()));
 repository.save(new User("Jaime"));
 
-class MySQLConfiguration extends DatabaseConfiguration {
-    @Override
-    public String url() {
-        return "<your database jdbc connection url>";
-    }
-}
-
-class User {
-    private UUID userId;
-    private String name;
-    private LocalDateTime creationTime;
-    private LocalDateTime lastLoginTime;
-}
-
 //Generic parameters: Repository type class, ID type class, Ignored for now
 class MySQLUsersRepository extends Repository<User, UUID, Object> {
     public MySQLUsersRepository(ConnectionManager connectionManager) {
@@ -57,6 +43,20 @@ class MySQLUsersRepository extends Repository<User, UUID, Object> {
                 .table("users")
                 .build();
     }
+}
+
+class MySQLConfiguration extends DatabaseConfiguration {
+    @Override
+    public String url() {
+        return "<your database jdbc connection url>";
+    }
+}
+
+class User {
+    private UUID userId;
+    private String name;
+    private LocalDateTime creationTime;
+    private LocalDateTime lastLoginTime;
 }
 ```
 ### Configuration
@@ -102,22 +102,6 @@ class User {
 ### Conditional mappers
 
 ```java
-enum UserType {
-    NORMAL,
-    ADMIN
-}
-
-abstract class User {
-    private UUID userId;
-    private UserType type;
-}
-
-class NormalUser extends User { }
-
-class AdminUser extends User {
-    private UUID grantedAdminByUserId;
-}
-
 class MySQLUsersRepository extends Repository<User, UUID, UserType> {
     public <T extends User> void save(T user) {
         super.save(user);
@@ -146,5 +130,21 @@ class MySQLUsersRepository extends Repository<User, UUID, UserType> {
                         .build())
                 .build();
     }
+}
+
+enum UserType {
+    NORMAL,
+    ADMIN
+}
+
+abstract class User {
+    private UUID userId;
+    private UserType type;
+}
+
+class NormalUser extends User { }
+
+class AdminUser extends User {
+    private UUID grantedAdminByUserId;
 }
 ```
