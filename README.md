@@ -1,5 +1,22 @@
 # ORM-Java
 
+### Set up
+```xml
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
+	<dependency>
+	    <groupId>com.github.JaimePolidura</groupId>
+	    <artifactId>ORM-Java</artifactId>
+	    <version>2.1.3</version>
+	</dependency>
+```
+
+
 ### Basic usage
 
 ```java
