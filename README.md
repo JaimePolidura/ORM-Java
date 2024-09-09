@@ -1,4 +1,5 @@
 # ORM-Java
+This library helps you to create your own mysql repositories without having to worry about serialization, queries etc.
 
 ### Set up
 ```xml
