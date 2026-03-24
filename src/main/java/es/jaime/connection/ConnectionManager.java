@@ -16,7 +16,7 @@ public final class ConnectionManager {
 
     @SneakyThrows
     public ConnectionManager(DatabaseConfiguration configuration) {
-        this.connectionPool = configuration.connectionPool();
+        this.connectionPool = configuration.getConnectionPool();
         this.configuration = configuration;
         this.connectionThreadLocal = new ThreadLocal<>();
     }
@@ -39,31 +39,31 @@ public final class ConnectionManager {
     }
 
     public ResultSet sendQuery(ReadQuery query) throws Exception {
-        if(configuration.showQueries()) System.out.println(query);
+        if(configuration.isShowQueries()) System.out.println(query);
 
         return createStatement().executeQuery(query.toString());
     }
 
     public ResultSet sendQuery(String query) throws Exception {
-        if(configuration.showQueries()) System.out.println(query);
+        if(configuration.isShowQueries()) System.out.println(query);
 
         return createStatement().executeQuery(query);
     }
 
     public void sendUpdate(WriteQuery query) throws Exception {
-        if(configuration.showQueries()) System.out.println(query);
+        if(configuration.isShowQueries()) System.out.println(query);
 
         createStatement().executeUpdate(query.toString());
     }
 
     public void sendUpdate(String query) throws Exception {
-        if(configuration.showQueries()) System.out.println(query);
+        if(configuration.isShowQueries()) System.out.println(query);
 
         createStatement().executeUpdate(query);
     }
 
     public void sendStatement(String statement) throws Exception {
-        if(configuration.showQueries()) System.out.println(statement);
+        if(configuration.isShowQueries()) System.out.println(statement);
 
         createStatement().execute(statement);
     }
@@ -75,14 +75,14 @@ public final class ConnectionManager {
 
     @SneakyThrows
     public void runCommands(List<String> commandsToRun){
-        if(commandsToRun.isEmpty()) {
+        if (commandsToRun.isEmpty()) {
             return;
         }
 
         Statement statement = createStatement();
 
         for (String command : commandsToRun) {
-            if(configuration.showQueries()) System.out.println(command);
+            if(configuration.isShowQueries()) System.out.println(command);
             statement.execute(command);
         }
     }
