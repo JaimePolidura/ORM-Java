@@ -8,9 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-public class MapDeserializer implements DatabaseTypeDeserializer<Map<?, ?>> {
+public class MapDeserializer implements DatabaseTypeDeserializer<Map> {
     @Override
-    public Map<?, ?> deserialize(String fieldName, ResultSet resultSet, Class<? extends Map<?, ?>> type) throws SQLException {
+    public Map deserialize(String fieldName, ResultSet resultSet, Class<? extends Map> type) throws SQLException {
         String data = resultSet.getString(fieldName);
         try {
             return new ObjectMapper().readValue(data, Map.class);
