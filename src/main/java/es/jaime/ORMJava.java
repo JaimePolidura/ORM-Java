@@ -7,6 +7,7 @@ import es.jaime.javaddd.domain.database.DatabaseTypeSerializer;
 import es.jaimetruman.MySQLQueryBuilder;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 public final class ORMJava {
@@ -25,6 +26,7 @@ public final class ORMJava {
         DATABASE_DESERIALIZER_MAPPER.addDeserializer(String.class, new StringDeserializer());
         DATABASE_DESERIALIZER_MAPPER.addDeserializer(UUID.class, new UUIDDeserializer());
         DATABASE_DESERIALIZER_MAPPER.addDeserializer(byte[].class, new ByteArrayDeserializer());
+        DATABASE_DESERIALIZER_MAPPER.addDeserializer(Map.class, new MapDeserializer());
     }
 
     public static <T> void addCustomSerializer(Class<? extends T> type, DatabaseTypeSerializer<T> serializer) {
