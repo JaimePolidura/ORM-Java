@@ -19,9 +19,9 @@ import static es.jaime.javaddd.application.utils.ExceptionUtils.rethrowChecked;
 import static es.jaime.javaddd.application.utils.ReflectionUtils.*;
 
 public abstract class DatabaseRepository<E, I, T> {
-    private final ObjectDeserializerResultset objectDeserializerResulset;
-    private final ConnectionManager connectionManager;
-    private final EntityMapper<E, T> entityMapper;
+    protected final ObjectDeserializerResultset objectDeserializerResulset;
+    protected final ConnectionManager connectionManager;
+    protected final EntityMapper<E, T> entityMapper;
 
     public DatabaseRepository(ConnectionManager connectionManager) {
         this.objectDeserializerResulset = new ObjectDeserializerResultset();
