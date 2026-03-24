@@ -18,12 +18,12 @@ import java.util.stream.Collectors;
 import static es.jaime.javaddd.application.utils.ExceptionUtils.rethrowChecked;
 import static es.jaime.javaddd.application.utils.ReflectionUtils.*;
 
-public abstract class Repository<E, I, T> {
+public abstract class DatabaseRepository<E, I, T> {
     private final ObjectDeserializerResultset objectDeserializerResulset;
     private final ConnectionManager connectionManager;
     private final EntityMapper<E, T> entityMapper;
 
-    public Repository(ConnectionManager connectionManager) {
+    public DatabaseRepository(ConnectionManager connectionManager) {
         this.objectDeserializerResulset = new ObjectDeserializerResultset();
         this.connectionManager = connectionManager;
         this.entityMapper = entityMapper();
