@@ -38,4 +38,5 @@ public final class DatabaseTypeDeserializerMapper {
 
         return deserializers.get(String.class);
     }
+
 }

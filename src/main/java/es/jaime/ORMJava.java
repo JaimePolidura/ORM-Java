@@ -24,6 +24,7 @@ public final class ORMJava {
         DATABASE_DESERIALIZER_MAPPER.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
         DATABASE_DESERIALIZER_MAPPER.addDeserializer(String.class, new StringDeserializer());
         DATABASE_DESERIALIZER_MAPPER.addDeserializer(UUID.class, new UUIDDeserializer());
+        DATABASE_DESERIALIZER_MAPPER.addDeserializer(byte[].class, new ByteArrayDeserializer());
     }
 
     public static <T> void addCustomSerializer(Class<? extends T> type, DatabaseTypeSerializer<T> serializer) {
