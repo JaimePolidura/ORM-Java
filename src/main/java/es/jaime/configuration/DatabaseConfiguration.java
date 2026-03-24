@@ -41,6 +41,11 @@ public class DatabaseConfiguration {
             this.perThreadConnectionPool = true;
         }
 
+        public Builder logQueries(boolean log) {
+            this.showQueries = log;
+            return this;
+        }
+
         public Builder url(String url) {
             this.url = url;
             return this;
