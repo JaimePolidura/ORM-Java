@@ -1,6 +1,6 @@
 package es.jaime.connection.pool.perthread;
 
-import es.jaime.connection.pool.AcquireConnectionOptions;
+import es.jaime.connection.pool.AcquireConnectionOption;
 import es.jaime.connection.pool.ConnectionPool;
 import es.jaime.connection.pool.ConnectionPoolEntry;
 
@@ -24,7 +24,9 @@ public final class PerThreadConnectionPool implements ConnectionPool {
     }
 
     @Override
-    public Connection acquire(EnumSet<AcquireConnectionOptions> options) {
+    public Connection acquire(AcquireConnectionOption option, AcquireConnectionOption... options) {
+        EnumSet<AcquireConnectionOption> optionsSet = EnumSet.of(option, options);
+
         long currentThreadId = Thread.currentThread().getId();
         boolean hasConnection = connectionsByThread.containsKey(currentThreadId);
 
@@ -33,7 +35,7 @@ public final class PerThreadConnectionPool implements ConnectionPool {
         }
 
         ConnectionPoolEntry poolEntry = connectionsByThread.get(currentThreadId);
-        if (options.contains(AcquireConnectionOptions.CHECK_LAST_ACCESS_TIMEOUT) && poolEntry.hasTimeoutPassed(connectionTimeoutMs)) {
+        if (optionsSet.contains(AcquireConnectionOption.CHECK_LAST_ACCESS_TIMEOUT) && poolEntry.hasTimeoutPassed(connectionTimeoutMs)) {
             poolEntry = recreateConnectionPoolEntry(currentThreadId, poolEntry);
         }
 

@@ -1,6 +1,6 @@
 package es.jaime.connection.pool.shared;
 
-import es.jaime.connection.pool.AcquireConnectionOptions;
+import es.jaime.connection.pool.AcquireConnectionOption;
 import es.jaime.connection.pool.ConnectionPool;
 import es.jaime.connection.pool.ConnectionPoolEntry;
 
@@ -25,7 +25,10 @@ public final class SharedConnectionPool implements ConnectionPool {
         this.url = url;
     }
 
-    public Connection acquire(EnumSet<AcquireConnectionOptions> options) {
+    @Override
+    public Connection acquire(AcquireConnectionOption option, AcquireConnectionOption... options) {
+        EnumSet<AcquireConnectionOption> optionSet = EnumSet.of(option, options);
+
         ConnectionPoolEntry connectionPoolEntry = freeList.get();
         boolean connectionFoundInFreeList = connectionPoolEntry != null;
 
@@ -33,7 +36,7 @@ public final class SharedConnectionPool implements ConnectionPool {
             connectionPoolEntry = createConnectionPoolEntry();
         }
         if(connectionFoundInFreeList
-                && options.contains(AcquireConnectionOptions.CHECK_LAST_ACCESS_TIMEOUT)
+                && optionSet.contains(AcquireConnectionOption.CHECK_LAST_ACCESS_TIMEOUT)
                 && connectionPoolEntry.hasTimeoutPassed(connectionTimeoutMs)){
             freeList.remove(connectionPoolEntry);
             connectionPoolEntry.close();
