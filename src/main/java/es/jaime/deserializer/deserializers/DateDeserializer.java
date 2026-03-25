@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-public class DataDeserializer implements DatabaseTypeDeserializer<Date> {
+public class DateDeserializer implements DatabaseTypeDeserializer<Date> {
     @Override
     public Date deserialize(String fieldName, ResultSet resultSet, Class<? extends Date> type) throws SQLException {
         java.sql.Date dateValue = resultSet.getDate(fieldName);
