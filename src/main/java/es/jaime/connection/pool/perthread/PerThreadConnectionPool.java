@@ -27,11 +27,11 @@ public final class PerThreadConnectionPool implements ConnectionPool {
         boolean hasConnection = connectionsByThread.containsKey(currentThreadId);
 
         if(!hasConnection){
-            createPooolConnectionEntry(currentThreadId);
+            createPoolConnectionEntry(currentThreadId);
         }
 
         ConnectionPoolEntry poolEntry = connectionsByThread.get(currentThreadId);
-        if(poolEntry.hasTimeoutPassed(connectionTimeoutMs)){
+        if (poolEntry.hasTimeoutPassed(connectionTimeoutMs)) {
             poolEntry = recreateConnectionPoolEntry(currentThreadId, poolEntry);
         }
 
@@ -50,10 +50,10 @@ public final class PerThreadConnectionPool implements ConnectionPool {
     private ConnectionPoolEntry recreateConnectionPoolEntry(long currentThreadId, ConnectionPoolEntry poolEntry) {
         poolEntry.close();
 
-        return createPooolConnectionEntry(currentThreadId);
+        return createPoolConnectionEntry(currentThreadId);
     }
 
-    private ConnectionPoolEntry createPooolConnectionEntry(long currentThreadId) {
+    private ConnectionPoolEntry createPoolConnectionEntry(long currentThreadId) {
         ConnectionPoolEntry connectionPoolEntry = createConnectionPoolEntry();
         connectionsByThread.put(currentThreadId, connectionPoolEntry);
         return connectionPoolEntry;

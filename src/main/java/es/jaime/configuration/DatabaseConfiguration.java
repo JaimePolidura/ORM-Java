@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +33,11 @@ public class DatabaseConfiguration {
         private boolean perThreadConnectionPool;
 
         public Builder() {
+            this.connectionTimeoutMs = Duration.ofHours(1L).toMillis();
             this.objectMapper = new ObjectMapper();
             this.commandsToRun = new ArrayList<>();
-            this.connectionTimeoutMs = 0;
-            this.showQueries = false;
             this.perThreadConnectionPool = true;
+            this.showQueries = false;
         }
 
         public Builder logQueries(boolean log) {
@@ -52,7 +51,7 @@ public class DatabaseConfiguration {
         }
 
         public Builder connectionTimeout(Duration duration) {
-            this.connectionTimeoutMs = duration.get(ChronoUnit.MILLIS);
+            this.connectionTimeoutMs = duration.toMillis();
             return this;
         }
 
