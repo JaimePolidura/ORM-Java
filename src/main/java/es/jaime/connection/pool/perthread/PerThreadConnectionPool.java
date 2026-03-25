@@ -1,10 +1,12 @@
 package es.jaime.connection.pool.perthread;
 
+import es.jaime.connection.pool.AcquireConnectionOptions;
 import es.jaime.connection.pool.ConnectionPool;
 import es.jaime.connection.pool.ConnectionPoolEntry;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,18 +24,20 @@ public final class PerThreadConnectionPool implements ConnectionPool {
     }
 
     @Override
-    public Connection acquire() {
+    public Connection acquire(EnumSet<AcquireConnectionOptions> options) {
         long currentThreadId = Thread.currentThread().getId();
         boolean hasConnection = connectionsByThread.containsKey(currentThreadId);
 
-        if(!hasConnection){
+        if (!hasConnection) {
             createPoolConnectionEntry(currentThreadId);
         }
 
         ConnectionPoolEntry poolEntry = connectionsByThread.get(currentThreadId);
-        if (poolEntry.hasTimeoutPassed(connectionTimeoutMs)) {
+        if (options.contains(AcquireConnectionOptions.CHECK_LAST_ACCESS_TIMEOUT) && poolEntry.hasTimeoutPassed(connectionTimeoutMs)) {
             poolEntry = recreateConnectionPoolEntry(currentThreadId, poolEntry);
         }
+
+        poolEntry.updateLastTimeAccessed();
 
         return poolEntry.getConnection();
     }

@@ -1,10 +1,12 @@
 package es.jaime.connection.pool.shared;
 
+import es.jaime.connection.pool.AcquireConnectionOptions;
 import es.jaime.connection.pool.ConnectionPool;
 import es.jaime.connection.pool.ConnectionPoolEntry;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,19 +25,22 @@ public final class SharedConnectionPool implements ConnectionPool {
         this.url = url;
     }
 
-    @Override
-    public Connection acquire() {
+    public Connection acquire(EnumSet<AcquireConnectionOptions> options) {
         ConnectionPoolEntry connectionPoolEntry = freeList.get();
         boolean connectionFoundInFreeList = connectionPoolEntry != null;
 
         if(!connectionFoundInFreeList){
             connectionPoolEntry = createConnectionPoolEntry();
         }
-        if(connectionFoundInFreeList && connectionPoolEntry.hasTimeoutPassed(connectionTimeoutMs)){
+        if(connectionFoundInFreeList
+                && options.contains(AcquireConnectionOptions.CHECK_LAST_ACCESS_TIMEOUT)
+                && connectionPoolEntry.hasTimeoutPassed(connectionTimeoutMs)){
             freeList.remove(connectionPoolEntry);
             connectionPoolEntry.close();
             connectionPoolEntry = createConnectionPoolEntry();
         }
+
+        connectionPoolEntry.updateLastTimeAccessed();
 
         connectionsByThread.put(Thread.currentThread().getId(), connectionPoolEntry);
 

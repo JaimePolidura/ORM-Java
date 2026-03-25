@@ -1,12 +1,14 @@
 package es.jaime.connection;
 
 import es.jaime.configuration.DatabaseConfiguration;
+import es.jaime.connection.pool.AcquireConnectionOptions;
 import es.jaime.connection.pool.ConnectionPool;
 import es.jaimetruman.ReadQuery;
 import es.jaimetruman.WriteQuery;
 import lombok.SneakyThrows;
 
 import java.sql.*;
+import java.util.EnumSet;
 import java.util.List;
 
 public final class ConnectionManager {
@@ -21,9 +23,9 @@ public final class ConnectionManager {
         this.connectionThreadLocal = new ThreadLocal<>();
     }
 
-    public Connection acquireConnection() {
+    public Connection acquireConnection(EnumSet<AcquireConnectionOptions> options) {
         if(connectionThreadLocal.get() == null){
-            connectionThreadLocal.set(connectionPool.acquire());
+            connectionThreadLocal.set(connectionPool.acquire(options));
         }
 
         return connectionThreadLocal.get();
@@ -69,7 +71,7 @@ public final class ConnectionManager {
     }
 
     private Statement createStatement() throws SQLException {
-        return connectionPool.acquire()
+        return connectionPool.acquire(EnumSet.of(AcquireConnectionOptions.DEFAULT_OPTIONS))
                 .createStatement();
     }
 

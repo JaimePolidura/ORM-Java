@@ -34,6 +34,10 @@ public final class ConnectionPoolEntry {
         return System.currentTimeMillis() > lastTimeAccessed + timeout;
     }
 
+    public void updateLastTimeAccessed() {
+        this.lastTimeAccessed = System.currentTimeMillis();
+    }
+
     public void recreate(ConnectionPoolEntry other) {
         this.close();
 
