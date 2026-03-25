@@ -50,7 +50,7 @@ public abstract class DatabaseRepository<E, I, T> {
         Object valueId = rethrowChecked(() -> getFieldValue(toPersist, entityMapper.getIdField()));
         boolean existsInDatabase = findById((I) valueId).isPresent();
 
-        if(existsInDatabase){
+        if (existsInDatabase) {
             updateExistingObject(toPersist, valueId);
         }else{
             insertNewObject(toPersist);
