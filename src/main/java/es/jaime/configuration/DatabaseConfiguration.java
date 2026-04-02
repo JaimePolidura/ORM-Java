@@ -93,14 +93,19 @@ public class DatabaseConfiguration {
         }
 
         public DatabaseConfiguration build() {
-            ConnectionPool connectionPool = switch(connectionPoolImplementation) {
-                case SINGLE_THREADED -> new SingleThreadedConnectionPool(connectionTimeoutMs, url);
-                case PER_THREAD -> new PerThreadConnectionPool(connectionTimeoutMs, url);
-                case SHARED -> new SharedConnectionPool(connectionTimeoutMs, url);
-            };
-
+            ConnectionPool connectionPool = createConnectionPoolImplementation();
             return new DatabaseConfiguration(url, connectionTimeoutMs, showQueries, connectionPool, commandsToRun,
                     objectMapper);
+        }
+
+        private ConnectionPool createConnectionPoolImplementation() {
+            switch (connectionPoolImplementation) {
+                case SINGLE_THREADED: return new SingleThreadedConnectionPool(connectionTimeoutMs, url);
+                case PER_THREAD: return new PerThreadConnectionPool(connectionTimeoutMs, url);
+                case SHARED: return new SharedConnectionPool(connectionTimeoutMs, url);
+            }
+
+            throw new RuntimeException();
         }
 
         private enum ConnectionPoolImplementation {
