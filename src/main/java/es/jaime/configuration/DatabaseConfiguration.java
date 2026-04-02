@@ -2,6 +2,7 @@ package es.jaime.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.jaime.connection.pool.ConnectionPool;
+import es.jaime.connection.pool.SingleThreadedConnectionPool;
 import es.jaime.connection.pool.perthread.PerThreadConnectionPool;
 import es.jaime.connection.pool.shared.SharedConnectionPool;
 import lombok.AllArgsConstructor;
@@ -30,13 +31,13 @@ public class DatabaseConfiguration {
         private boolean showQueries;
         private List<String> commandsToRun;
         private ObjectMapper objectMapper;
-        private boolean perThreadConnectionPool;
+        private ConnectionPoolImplementation connectionPoolImplementation;
 
         public Builder() {
             this.connectionTimeoutMs = Duration.ofHours(1L).toMillis();
             this.objectMapper = new ObjectMapper();
             this.commandsToRun = new ArrayList<>();
-            this.perThreadConnectionPool = true;
+            this.connectionPoolImplementation = ConnectionPoolImplementation.PER_THREAD;
             this.showQueries = false;
         }
 
@@ -75,23 +76,35 @@ public class DatabaseConfiguration {
             return this;
         }
 
+
         public Builder perThreadConnectionPool() {
-            this.perThreadConnectionPool = true;
+            this.connectionPoolImplementation = ConnectionPoolImplementation.PER_THREAD;
+            return this;
+        }
+
+        public Builder singleThreadedConnectionPool() {
+            this.connectionPoolImplementation = ConnectionPoolImplementation.SINGLE_THREADED;
             return this;
         }
 
         public Builder sharedConnectionPool() {
-            this.perThreadConnectionPool = false;
+            this.connectionPoolImplementation = ConnectionPoolImplementation.SHARED;
             return this;
         }
 
         public DatabaseConfiguration build() {
-            ConnectionPool connectionPool = perThreadConnectionPool ?
-                    new PerThreadConnectionPool(connectionTimeoutMs, url) :
-                    new SharedConnectionPool(connectionTimeoutMs, url);
+            ConnectionPool connectionPool = switch(connectionPoolImplementation) {
+                case SINGLE_THREADED -> new SingleThreadedConnectionPool(connectionTimeoutMs, url);
+                case PER_THREAD -> new PerThreadConnectionPool(connectionTimeoutMs, url);
+                case SHARED -> new SharedConnectionPool(connectionTimeoutMs, url);
+            };
 
             return new DatabaseConfiguration(url, connectionTimeoutMs, showQueries, connectionPool, commandsToRun,
                     objectMapper);
+        }
+
+        private enum ConnectionPoolImplementation {
+            PER_THREAD, SHARED, SINGLE_THREADED
         }
     }
 }
