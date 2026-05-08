@@ -107,14 +107,14 @@ public final class ConnectionManager {
     }
 
     public Statement createStatement() throws SQLException {
-        checkNoTransactionInProgress();
+        checkTransactionInProgress();
 
         return getCurrentConnection(AcquireConnectionOption.DEFAULT_OPTIONS)
                 .createStatement();
     }
 
     public PreparedStatement createPreparedStatement(String sql) throws SQLException {
-        checkNoTransactionInProgress();
+        checkTransactionInProgress();
 
         return getCurrentConnection(AcquireConnectionOption.DEFAULT_OPTIONS)
                 .prepareStatement(sql);
