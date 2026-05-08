@@ -106,6 +106,20 @@ public final class ConnectionManager {
         stopUsingCurrentConnection();
     }
 
+    public Statement createStatement() throws SQLException {
+        checkNoTransactionInProgress();
+
+        return getCurrentConnection(AcquireConnectionOption.DEFAULT_OPTIONS)
+                .createStatement();
+    }
+
+    public PreparedStatement createPreparedStatement(String sql) throws SQLException {
+        checkNoTransactionInProgress();
+
+        return getCurrentConnection(AcquireConnectionOption.DEFAULT_OPTIONS)
+                .prepareStatement(sql);
+    }
+
     private void checkNoTransactionInProgress() {
         if (transactionInProgress.get()) {
             throw new IllegalState("Cannot start transaction when another transaction in the current thread is in progress");
@@ -129,12 +143,5 @@ public final class ConnectionManager {
     private void stopUsingCurrentConnection() {
         connectionPool.release(connectionThreadLocal.get());
         connectionThreadLocal.remove();
-    }
-
-    private Statement createStatement() throws SQLException {
-        checkNoTransactionInProgress();
-
-        return getCurrentConnection(AcquireConnectionOption.DEFAULT_OPTIONS)
-                .createStatement();
     }
 }
