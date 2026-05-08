@@ -2,9 +2,9 @@ package es.jaime.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.jaime.connection.pool.ConnectionPool;
-import es.jaime.connection.pool.SingleThreadedConnectionPool;
-import es.jaime.connection.pool.perthread.PerThreadConnectionPool;
-import es.jaime.connection.pool.shared.SharedConnectionPool;
+import es.jaime.connection.pool.impl.SingleThreadedConnectionPool;
+import es.jaime.connection.pool.impl.PerThreadConnectionPool;
+import es.jaime.connection.pool.impl.shared.SharedConnectionPool;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package es.jaime.connection.pool.perthread;
+package es.jaime.connection.pool.impl;
 
 import es.jaime.connection.pool.AcquireConnectionOption;
 import es.jaime.connection.pool.ConnectionPool;
@@ -46,11 +46,6 @@ public final class PerThreadConnectionPool implements ConnectionPool {
 
     @Override
     public void release(Connection connection) {
-    }
-
-    @Override
-    public void closeAll() {
-        connectionsByThread.values().forEach(ConnectionPoolEntry::close);
     }
 
     private ConnectionPoolEntry recreateConnectionPoolEntry(long currentThreadId, ConnectionPoolEntry poolEntry) {

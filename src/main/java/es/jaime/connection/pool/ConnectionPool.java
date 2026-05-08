@@ -6,6 +6,4 @@ public interface ConnectionPool {
     Connection acquire(AcquireConnectionOption option, AcquireConnectionOption... options);
 
     void release(Connection connection);
-
-    void closeAll();
 }

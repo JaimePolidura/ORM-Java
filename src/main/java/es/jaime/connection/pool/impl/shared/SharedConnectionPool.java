@@ -1,4 +1,4 @@
-package es.jaime.connection.pool.shared;
+package es.jaime.connection.pool.impl.shared;
 
 import es.jaime.connection.pool.AcquireConnectionOption;
 import es.jaime.connection.pool.ConnectionPool;
@@ -59,7 +59,7 @@ public final class SharedConnectionPool implements ConnectionPool {
     }
 
     @Override
-    public void closeAll() {
+    public void releaseAll() {
         freeList.removeAll();
     }
 

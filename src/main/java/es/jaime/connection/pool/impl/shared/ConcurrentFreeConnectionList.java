@@ -1,4 +1,4 @@
-package es.jaime.connection.pool.shared;
+package es.jaime.connection.pool.impl.shared;
 
 import es.jaime.connection.pool.ConnectionPoolEntry;
 import org.jetbrains.annotations.Nullable;

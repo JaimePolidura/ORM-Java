@@ -123,7 +123,7 @@ public abstract class DatabaseRepository<E, I, T> {
 
             return resultSet.getDouble(1);
         }catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -139,7 +139,7 @@ public abstract class DatabaseRepository<E, I, T> {
 
             return Optional.of(deserialized);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -159,7 +159,7 @@ public abstract class DatabaseRepository<E, I, T> {
 
             return toReturn;
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

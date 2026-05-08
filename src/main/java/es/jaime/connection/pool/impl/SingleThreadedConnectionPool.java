@@ -1,5 +1,7 @@
-package es.jaime.connection.pool;
+package es.jaime.connection.pool.impl;
 
+import es.jaime.connection.pool.AcquireConnectionOption;
+import es.jaime.connection.pool.ConnectionPool;
 import es.jaime.javaddd.application.utils.ExceptionUtils;
 
 import java.sql.Connection;
@@ -37,14 +39,6 @@ public class SingleThreadedConnectionPool implements ConnectionPool {
 
     @Override
     public void release(Connection connection) {
-    }
-
-    @Override
-    public void closeAll() {
-        ExceptionUtils.rethrowChecked(() -> {
-            this.connection.close();
-            this.connection = null;
-        });
     }
 
     private void initConnection() {

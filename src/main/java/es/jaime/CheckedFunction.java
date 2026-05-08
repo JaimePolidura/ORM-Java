@@ -8,7 +8,7 @@ public interface CheckedFunction<I, O> {
         try{
             return apply(input);
         }catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
@@ -16,7 +16,7 @@ public interface CheckedFunction<I, O> {
         try{
             return apply(input);
         }catch (Exception e) {
-            throw new RuntimeException(errorMessage);
+            throw new RuntimeException(e);
         }
     }
 }
