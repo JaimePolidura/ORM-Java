@@ -58,11 +58,6 @@ public final class SharedConnectionPool implements ConnectionPool {
         connectionsByThread.remove(threadId);
     }
 
-    @Override
-    public void releaseAll() {
-        freeList.removeAll();
-    }
-
     private ConnectionPoolEntry createConnectionPoolEntry() {
         return rethrowChecked(() -> {
             Connection connection = DriverManager.getConnection(url);
