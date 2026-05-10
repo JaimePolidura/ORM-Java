@@ -1,6 +1,5 @@
 package es.jaime.connection.pool.impl;
 
-import es.jaime.connection.pool.AcquireConnectionOption;
 import es.jaime.connection.pool.ConnectionPool;
 import es.jaime.javaddd.application.utils.ExceptionUtils;
 
@@ -21,14 +20,12 @@ public class SingleThreadedConnectionPool implements ConnectionPool {
     }
 
     @Override
-    public Connection acquire(AcquireConnectionOption option, AcquireConnectionOption... options) {
+    public Connection acquire() {
         if (connection == null) {
             initConnection();
         }
 
-        EnumSet<AcquireConnectionOption> optionsSet = EnumSet.of(option, options);
-        if (optionsSet.contains(AcquireConnectionOption.CHECK_LAST_ACCESS_TIMEOUT)
-            && System.currentTimeMillis() > lastTimeAccessed + connectionTimeoutMs) {
+        if (System.currentTimeMillis() > lastTimeAccessed + connectionTimeoutMs) {
             initConnection();
         }
 

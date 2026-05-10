@@ -1,6 +1,5 @@
 package es.jaime.transactions;
 
-import es.jaime.connection.pool.AcquireConnectionOption;
 import es.jaime.connection.pool.ConnectionPool;
 import es.jaime.javaddd.domain.exceptions.IllegalState;
 import lombok.AllArgsConstructor;
@@ -110,14 +109,14 @@ public class TransactionManager {
 
     private void createFakeTransaction(TransactionPropagationLevel propagationLevel) throws SQLException {
         Stack<LiveTransaction> currentTransactionsInProgress = liveThreadTransactions.get();
-        Connection newConnection = connectionPool.acquire(AcquireConnectionOption.CHECK_LAST_ACCESS_TIMEOUT);
+        Connection newConnection = connectionPool.acquire();
         newConnection.setAutoCommit(true);
         currentTransactionsInProgress.push(new LiveTransaction(propagationLevel, newConnection, false, false));
     }
 
     private void createNewTransaction(TransactionPropagationLevel propagationLevel) throws SQLException {
         Stack<LiveTransaction> currentTransactionsInProgress = liveThreadTransactions.get();
-        Connection newConnection = connectionPool.acquire(AcquireConnectionOption.CHECK_LAST_ACCESS_TIMEOUT);
+        Connection newConnection = connectionPool.acquire();
         newConnection.setAutoCommit(false);
         currentTransactionsInProgress.push(new LiveTransaction(propagationLevel, newConnection, true, false));
     }
