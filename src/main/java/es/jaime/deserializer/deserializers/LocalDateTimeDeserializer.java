@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public final class LocalDateTimeDeserializer implements DatabaseTypeDeserializer<LocalDateTime> {
     @Override
     public LocalDateTime deserialize(String fieldName, ResultSet resultSet, Class<? extends LocalDateTime> type) throws SQLException {
-        return resultSet.getTimestamp(fieldName).toLocalDateTime();
+        var sqlTimestamp = resultSet.getTimestamp(fieldName);
+        return sqlTimestamp != null ? sqlTimestamp.toLocalDateTime() : null;
     }
 }

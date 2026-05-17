@@ -13,7 +13,6 @@ import es.jaimetruman.update.UpdateOptionFull1;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static es.jaime.javaddd.application.utils.ExceptionUtils.rethrowChecked;
 import static es.jaime.javaddd.application.utils.ReflectionUtils.*;
@@ -64,7 +63,7 @@ public abstract class DatabaseRepository<E, I, T> {
         rethrowChecked(() -> {
             List<String> fieldNames = getAllFields(toUpdate.getClass()).stream()
                     .map(Field::getName)
-                    .collect(Collectors.toList());
+                    .toList();
             UpdateOptionFull1 lastUpdateQuery = Update.table(entityMapper.getTable())
                     .set(entityMapper.getIdField(), fieldIdValue);
 
@@ -83,7 +82,7 @@ public abstract class DatabaseRepository<E, I, T> {
         rethrowChecked(() -> {
             List<String> fieldNames = getAllFields(toPersist.getClass()).stream()
                     .map(Field::getName)
-                    .collect(Collectors.toList());
+                    .toList();
             List<Object> fieldValues = new ArrayList<>(fieldNames.size());
 
             for (String fieldName : fieldNames) {

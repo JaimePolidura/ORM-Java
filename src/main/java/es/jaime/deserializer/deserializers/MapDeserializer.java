@@ -12,6 +12,10 @@ public class MapDeserializer implements DatabaseTypeDeserializer<Map> {
     @Override
     public Map deserialize(String fieldName, ResultSet resultSet, Class<? extends Map> type) throws SQLException {
         String data = resultSet.getString(fieldName);
+        if (data != null) {
+            return null;
+        }
+
         try {
             return new ObjectMapper().readValue(data, Map.class);
         } catch (JsonProcessingException e) {
