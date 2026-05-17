@@ -46,15 +46,18 @@ public abstract class DatabaseRepository<E, I, T> {
                 .where(entityMapper.getIdField()).equal(id)));
     }
 
-    public <O extends E> void save(O toPersist) {
+    // Returns boolean indicating if a new row was inserted in the Db
+    public <O extends E> boolean save(O toPersist) {
         Object valueId = rethrowChecked(() -> getFieldValue(toPersist, entityMapper.getIdField()));
         boolean existsInDatabase = findById((I) valueId).isPresent();
 
         if (existsInDatabase) {
             updateExistingObject(toPersist, valueId);
-        }else{
+        } else {
             insertNewObject(toPersist);
         }
+
+        return !existsInDatabase;
     }
 
     protected <O extends E> void updateExistingObject(O toUpdate, Object fieldIdValue) {

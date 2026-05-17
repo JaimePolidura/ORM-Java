@@ -128,13 +128,14 @@ public class TransactionManager {
                 lastTransaction.isRealTransaction(), true));
     }
 
+
+    private boolean noTransactionInProgress() {
+        return liveThreadTransactions.get().isEmpty();
+    }
+
     private record LiveTransaction(TransactionPropagationLevel propagationLevel,
                                    Connection connection,
                                    boolean isRealTransaction,
                                    boolean isJoiningTransaction) {
-    }
-
-    private boolean noTransactionInProgress() {
-        return liveThreadTransactions.get().isEmpty();
     }
 }
