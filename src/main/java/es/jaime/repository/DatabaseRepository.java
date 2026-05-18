@@ -152,12 +152,12 @@ public abstract class DatabaseRepository<E, I, T> {
                 return Collections.EMPTY_LIST;
             }
 
-            Class<? extends E> mappingClass = entityMapper().getMappingClass(resultSet);
             List<E> toReturn = new ArrayList<>();
 
             do {
+                Class<? extends E> mappingClass = entityMapper().getMappingClass(resultSet);
                 toReturn.add(objectDeserializerResulset.deserialize(resultSet, mappingClass));
-            }while (resultSet.next());
+            } while (resultSet.next());
 
             return toReturn;
         } catch (Exception e) {
